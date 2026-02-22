@@ -4,6 +4,7 @@
 # Temporary files
 *.txt
 nul
+*.csv
 
 # Old backup
 index-backup.html
