@@ -8,5 +8,5 @@ nul
 # Old backup
 index-backup.html
 
-# Screenshots
-*.png
+# Screenshots (exclude only in root)
+Скриншот*.png
