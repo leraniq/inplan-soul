@@ -1,0 +1,15 @@
+№,Имя,Роль,Локация,"Компания, где работает",В компании с,% участия
+1,**Ахметова Елизавета**,**Delivery lead**,**Москва**,**AxTeam Tech**,01\.01.2025,100
+1,**Самейко Валерия**,**Delivery lead**,**Санкт-Петербург**,**AxTeam Tech**,31\.07.2023,100
+2,**Дикинов Игорь**,**Product owner**,**Москва**,**AxTeam Tech**,01\.11.2022,25
+3,**Воронкина Анна**,**Stream lead**,**Москва**,**AxTeam Tech**,01\.11.2022,0
+3,Захаров Дмитрий,Business analyst,Москва,AxTeam Tech,03\.03.2025,0
+3,Котенев Богдан,Business analyst,Москва,AxTeam Tech,07\.11.2023,0
+3,Минина Дарья,Business analyst,,AxTeam Tech,,100
+3,Серов Андрей,Business analyst,Москва,AxTeam Tech,17\.04.2023,0
+3,Солдатова Татьяна,Business analyst,Санкт-Петербург,AxTeam Tech,28\.10.2024,100
+3,Хафизова Алсу,Business analyst,Москва,AxTeam Tech,27\.05.2024,50
+3,Цветкова Анастасия,Business analyst,Москва,AxTeam Tech,27\.05.2024,70
+4,Галимшин Эльдар,System analyst,Алматы (\+2ч),AxTeam Tech Kazakhstan,10\.04.2023,100
+5,Голодок Владислав,Front-end dev,Ростов-на-Дону,AxTeam Tech,06\.09.2021,100
+8,Басинский Вадим,Data engineer,Гродно,SkillStaff,,100

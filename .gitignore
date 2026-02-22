@@ -1,0 +1,12 @@
+# Python scripts (не нужны для публикации)
+*.py
+
+# Temporary files
+*.txt
+nul
+
+# Old backup
+index.html
+
+# Screenshots
+*.png

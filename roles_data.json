@@ -1,0 +1,220 @@
+{
+  "roles": {
+    "Завражнова Юлия": "System analyst",
+    "Воронкина Анна": "Stream lead",
+    "Ефимова Виктория": "Stream lead",
+    "Дикинов Игорь": "Product owner",
+    "Коротченко Арина": "Business analyst",
+    "Котенев Богдан": "Business analyst",
+    "Попов Алексей": "Business analyst",
+    "Брюханова Юлия": "Релиз-менеджер",
+    "Чибисов Андрей": "Stream lead",
+    "Малова Наталья": "Delivery lead",
+    "Брыков Максим": "QA",
+    "Земсков Сергей": "ML-engineer (Lead)",
+    "Акиндинова Дарья": "Business analyst",
+    "Буторин Михаил": "Back-end lead / Архитектор",
+    "Репин Андрей": "Product owner",
+    "Бородина Есения": "QA",
+    "Новикова Наталья": "System analyst",
+    "Яковлева Наталья": "System analyst lead",
+    "Рожков Алексей": "Business analyst",
+    "Гладков Валентин": "Back-end dev",
+    "Михайленко Александр": "Back-end dev",
+    "Лупеко Елизавета": "DBA",
+    "Майер Роман": "Data engineer",
+    "Богачев Иван": "ML-engineer",
+    "Захаров Дмитрий": "Business analyst",
+    "Максимов Алексей": "ML-engineer (Lead)",
+    "Дизенгоф Юлия": "LTQA",
+    "Яндовский Павел": "ML-engineer",
+    "Галимшин Эльдар": "System analyst",
+    "Хуснутдинова Эльмира": "System analyst",
+    "Серов Андрей": "Business analyst",
+    "Шушков Артур": "Back-end dev",
+    "Остапенко Егор": "ML-engineer",
+    "Цветкова Анастасия": "Business analyst",
+    "Хафизова Алсу": "Business analyst",
+    "Бучукури Тамаз": "QA automation",
+    "Букша Дарья": "Front-end dev",
+    "Гуржиева Галина": "QA",
+    "Машталов Павел": "QA automation",
+    "Малышенко Виктория": "DevOps",
+    "Пилитский Александр": "ML-engineer",
+    "Шутихина Юлия": "Project manager",
+    "Арбатский Дмитрий": "Администратор проекта",
+    "Хмыров Юрий": "BI",
+    "Дилоян Акоб": "Back-end dev",
+    "Мусин Динислам": "Front-end dev",
+    "Кресников Алексей": "Front-end lead",
+    "Барсуков Даниил": "Business analyst",
+    "Суслова Екатерина": "Business analyst",
+    "Клемашев Николай": "ML-engineer",
+    "Самейко Валерия": "Delivery lead",
+    "Шиленко Андрей": "Front-end dev",
+    "Ануфриев Илья": "QA",
+    "Цветков Алексей": "Infrastructure lead",
+    "Никишонков Макар": "Специалист по внедрению",
+    "Курмачев Юрий": "Business analyst",
+    "Бабин Данила": "Business analyst",
+    "Ибрагимова Амина": "Специалист по внедрению",
+    "Голодок Владислав": "Front-end dev",
+    "Сапельникова Ксения": "ML-engineer",
+    "Самойлов Дмитрий": "Product owner",
+    "Гайдук Семен": "Stream lead",
+    "Боклаженко Владимир": "Product owner",
+    "Ларюшкин Иван": "Business analyst",
+    "Дусенко Кирилл": "Дизайнер",
+    "Исаичкин Василий": "Архитектор",
+    "Ситников Вячеслав": "DevOps",
+    "Назаренко Дмитрий": "ML/DE/BI lead",
+    "Третьяк Роман": "Data engineer",
+    "Афанасов Павел": "System analyst",
+    "Фомина Ольга": "Front-end dev",
+    "Музипов Булат": "Back-end dev",
+    "Свиридов Алексей": "Back-end dev / Front-end dev",
+    "Виноградов Иван": "QA",
+    "Ефименко Александр": "ML-engineer",
+    "Ткаченко Екатерина": "Специалист по внедрению",
+    "Мозжеров Сергей": "Директор по продукту",
+    "Осипов Левон": "Support",
+    "Сухарев Александр": "ML-engineer",
+    "Яковлев Антон": "Support",
+    "Бутова Маргарита": "Руководитель проекта",
+    "Уланов Сергей": "Руководитель проекта",
+    "Бахитова Анастасия": "System analyst",
+    "Басинский Вадим": "Data engineer",
+    "Кутимский Максим": "System analyst",
+    "Бурдин Иван": "System analyst",
+    "Стребков Андрей": "BI",
+    "Стрюкова Анна": "Business analyst",
+    "Минина Дарья": "Business analyst",
+    "Султанов Руслан": "Business analyst",
+    "Солдатова Татьяна": "Business analyst",
+    "Морева Екатерина": "DevOps",
+    "Гарифулин Илья": "Back-end dev",
+    "Карасев Илья": "Business analyst",
+    "Галяева Наталья": "LTQA",
+    "Ахметова Елизавета": "Delivery lead",
+    "Блохин Данила": "QA",
+    "Климук Анна": "Product owner"
+  },
+  "photos": [
+    [
+      "Anastasiia Bakhitova.png",
+      "Anastasiia Bakhitova"
+    ],
+    [
+      "Anna Kachurina.png",
+      "Anna Kachurina"
+    ],
+    [
+      "Anna Klimuk.png",
+      "Anna Klimuk"
+    ],
+    [
+      "Anna Stryukova.png",
+      "Anna Stryukova"
+    ],
+    [
+      "Anna Voronkina.png",
+      "Anna Voronkina"
+    ],
+    [
+      "Arina Korotchenko.png",
+      "Arina Korotchenko"
+    ],
+    [
+      "Daria Akindinova.png",
+      "Daria Akindinova"
+    ],
+    [
+      "Darya Buksha.png",
+      "Darya Buksha"
+    ],
+    [
+      "Darya Minina.png",
+      "Darya Minina"
+    ],
+    [
+      "Ekaterina Suslova.png",
+      "Ekaterina Suslova"
+    ],
+    [
+      "Elizaveta Lupeko.png",
+      "Elizaveta Lupeko"
+    ],
+    [
+      "Eseniya Borodina.png",
+      "Eseniya Borodina"
+    ],
+    [
+      "Galina Gurzhieva.png",
+      "Galina Gurzhieva"
+    ],
+    [
+      "Julia Bryukhanova.png",
+      "Julia Bryukhanova"
+    ],
+    [
+      "Kseniya Sapelnikova.png",
+      "Kseniya Sapelnikova"
+    ],
+    [
+      "Margarita Butova.png",
+      "Margarita Butova"
+    ],
+    [
+      "Natalia Novikova.png",
+      "Natalia Novikova"
+    ],
+    [
+      "Natalia Yakovleva.png",
+      "Natalia Yakovleva"
+    ],
+    [
+      "Natalya Galyaeva.png",
+      "Natalya Galyaeva"
+    ],
+    [
+      "Tatyana Soldatova.png",
+      "Tatyana Soldatova"
+    ],
+    [
+      "Viktoriia Efimova.png",
+      "Viktoriia Efimova"
+    ],
+    [
+      "Viktoriya Malyshenko.png",
+      "Viktoriya Malyshenko"
+    ],
+    [
+      "Ахметова Елизавета.jpg",
+      "Ахметова Елизавета"
+    ],
+    [
+      "Ибрагимова Амина.jpg",
+      "Ибрагимова Амина"
+    ],
+    [
+      "Малова Наталья.jpg",
+      "Малова Наталья"
+    ],
+    [
+      "Самейко Валерия.jpg",
+      "Самейко Валерия"
+    ],
+    [
+      "Хафизова Алсу и Завражнова Юля.jpg",
+      "Хафизова Алсу и Завражнова Юля"
+    ],
+    [
+      "Хуснутдинова Эльмира.jpg",
+      "Хуснутдинова Эльмира"
+    ],
+    [
+      "Цветкова Анастасия.jpg",
+      "Цветкова Анастасия"
+    ]
+  ]
+}

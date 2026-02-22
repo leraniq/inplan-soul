@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Soul of the Code | In.Plan 23.02</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --neon-cyan: #00f6ff;
+            --neon-pink: #ff006e;
+            --neon-purple: #8338ec;
+            --neon-blue: #3a86ff;
+            --dark-bg: #0a0a0f;
+            --dark-card: rgba(20, 20, 35, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(131, 56, 236, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 246, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 0, 110, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: bgShift 20s ease infinite alternate;
+        }
+
+        @keyframes bgShift {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 30px) scale(1.05); }
+        }
+
+        /* Grid Pattern */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 246, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 246, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* HERO SECTION - MANIFESTO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px 20px;
+            position: relative;
+        }
+
+        .system-status {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--neon-cyan);
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .hero h1 {
+            font-size: 5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 40px;
+            animation: fadeInDown 1.2s ease;
+        }
+
+        .manifesto {
+            max-width: 900px;
+            font-size: 1.3rem;
+            line-height: 2;
+            color: var(--text-primary);
+            margin-bottom: 60px;
+            animation: fadeInUp 1.5s ease;
+        }
+
+        .manifesto p {
+            margin-bottom: 25px;
+        }
+
+        .manifesto .highlight {
+            color: var(--neon-cyan);
+            font-weight: 600;
+        }
+
+        .manifesto .ps {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 40px;
+        }
+
+        /* ENERGY GRID - Photos */
+        .energy-grid {
+            padding: 100px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 60px;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+
+        .photos-constellation {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 100px;
+        }
+
+        .energy-node {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 20px;
+            overflow: hidden;
+            background: var(--dark-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .energy-node:hover {
+            transform: translateY(-5px);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 10px 40px rgba(0, 246, 255, 0.3);
+        }
+
+        .energy-node img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .energy-node.special-agent {
+            border-color: var(--neon-pink);
+            animation: specialGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes specialGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 110, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(255, 0, 110, 0.6); }
+        }
+
+        .entity-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            font-size: 0.75rem;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--neon-cyan);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .energy-node:hover .entity-label {
+            opacity: 1;
+        }
+
+        /* NODES SECTION - Greetings */
+        .nodes-section {
+            padding: 100px 20px;
+        }
+
+        .vip-nodes {
+            margin-bottom: 100px;
+        }
+
+        .node-card {
+            background: var(--dark-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .node-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+        }
+
+        .node-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0, 246, 255, 0.2);
+            border-color: var(--neon-cyan);
+        }
+
+        .node-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .node-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+        }
+
+        .node-role {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+
+        .connection-status {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--neon-purple);
+            padding: 5px 15px;
+            border: 1px solid var(--neon-purple);
+            border-radius: 20px;
+        }
+
+        /* VIP Nodes Special Styling */
+        .vip-node {
+            border: 2px solid var(--neon-pink);
+        }
+
+        .vip-node .node-name {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .vip-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            margin-left: 15px;
+        }
+
+        /* Signal Frequencies */
+        .signal-frequency {
+            margin-bottom: 25px;
+            padding-left: 20px;
+            border-left: 3px solid var(--neon-cyan);
+            position: relative;
+        }
+
+        .frequency-header {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--neon-cyan);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .frequency-content {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Team Sections */
+        .team-group {
+            margin-bottom: 80px;
+        }
+
+        .team-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .team-name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--neon-purple);
+            margin-bottom: 10px;
+        }
+
+        .team-divider {
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            margin: 0 auto;
+        }
+
+        /* Regular Nodes Grid */
+        .nodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+            gap: 25px;
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--neon-cyan);
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .manifesto {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .nodes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .node-name {
+                font-size: 1.5rem;
+            }
+
+            .vip-node .node-name {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="system-status">SYSTEM STATUS: ALIVE // HEARTBEAT DETECTED</div>
+
+        <h1>The Soul of the Code</h1>
+
+        <div class="manifesto">
+            <p>Код — это просто синтаксис, пока через него не пройдет <span class="highlight">электричество</span>.</p>
+            <p>Проект — это просто задачи в трекере, пока в него не вдохнут <span class="highlight">жизнь</span> люди.</p>
+
+            <p>Вы — <span class="highlight">Архитектура и Логика</span> In.Plan. Вы строите фундамент, на котором держится наш мир.</p>
+            <p>Мы — <span class="highlight">Энергия</span>, которая бежит по этим проводам.</p>
+
+            <p>На этой схеме 32 источника сигнала. Это мы — девушки In.Plan. Мы здесь, чтобы подсветить ваши таланты, скомпилировать теплые слова и напомнить: за каждым строгим коммитом стоит живая душа.</p>
+
+            <p class="ps">P.S. Система обнаружила 31 визуальный профиль и один <span class="highlight">Секретный Протокол Уюта</span> (позывной: Юля Дизенгоф), который принял форму котика. Потому что без котиков IT не работает.</p>
+
+            <p class="ps">Скролльте вниз. Подключайтесь к потоку.</p>
+        </div>
+
+        <div class="scroll-indicator">▼ SCROLL TO CONNECT ▼</div>
+    </section>
+
+    <!-- ENERGY GRID -->
+    <section class="energy-grid">
+        <div class="container">
+            <h2 class="section-title">Энергетическое Ядро</h2>
+            <p class="section-subtitle">32 ACTIVE NODES // ENERGY FLOW: MAXIMUM</p>
+
+            <div class="photos-constellation">
+                <div class="energy-node">
+                    <img src="Daria Akindinova.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Daria A.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Julia Bryukhanova.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Julia B.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Tatyana Soldatova.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Tatyana S.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Galina Gurzhieva.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Galina G.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Darya Buksha.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Darya B.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Eseniya Borodina.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Eseniya B.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Natalia Novikova.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Natalia N.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Natalia Yakovleva.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Natalia Y.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Anna Voronkina.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Anna V.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Arina Korotchenko.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Arina K.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Elizaveta Lupeko.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Elizaveta L.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Viktoriia Efimova.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Viktoriia E.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Anastasiia Bakhitova.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Anastasiia B.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Anna Stryukova.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Anna S.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Darya Minina.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Darya M.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Viktoriya Malyshenko.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Viktoriya M.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Ekaterina Suslova.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Ekaterina S.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Kseniya Sapelnikova.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Kseniya S.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Anna Kachurina.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Anna K.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Anna Klimuk.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Anna K.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Natalya Galyaeva.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Natalya G.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="Margarita Butova.png" alt="Energy Node">
+                    <div class="entity-label">Entity: Margarita B.</div>
+                </div>
+                <div class="energy-node">
+                    <img src="IMG_2891.jpg" alt="Energy Node">
+                    <div class="entity-label">Entity: Signal Source</div>
+                </div>
+                <div class="energy-node">
+                    <img src="IMG_6725.jpg" alt="Energy Node">
+                    <div class="entity-label">Entity: Signal Source</div>
+                </div>
+                <div class="energy-node">
+                    <img src="IMG_2264.jpg" alt="Energy Node">
+                    <div class="entity-label">Entity: Signal Source</div>
+                </div>
+                <div class="energy-node">
+                    <img src="IMG_7569.jpg" alt="Energy Node">
+                    <div class="entity-label">Entity: Signal Source</div>
+                </div>
+                <div class="energy-node">
+                    <img src="IMG_3191.jpg" alt="Energy Node">
+                    <div class="entity-label">Entity: Signal Source</div>
+                </div>
+                <div class="energy-node">
+                    <img src="IMG_20260221_150310.jpg" alt="Energy Node">
+                    <div class="entity-label">Entity: Signal Source</div>
+                </div>
+                <div class="energy-node">
+                    <img src="photo_2026-02-21_21-44-05.jpg" alt="Energy Node">
+                    <div class="entity-label">Entity: Signal Source</div>
+                </div>
+
+                <!-- Special Agent - Cat Mode -->
+                <div class="energy-node special-agent">
+                    <img src="https://raw.githubusercontent.com/anthropics/anthropic-quickstarts/main/computer-use-demo/static/images/anthropic-icon.svg" alt="Secret Protocol">
+                    <div class="entity-label">Entity: Julia D. (Cat_Mode) 🐱</div>
+                </div>
+
+                <!-- Additional placeholders to reach 32 -->
+                <div class="energy-node">
+                    <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple)); display: flex; align-items: center; justify-content: center; font-size: 2rem;">✨</div>
+                    <div class="entity-label">Entity: Energy Source</div>
+                </div>
+                <div class="energy-node">
+                    <div style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple)); display: flex; align-items: center; justify-content: center; font-size: 2rem;">💜</div>
+                    <div class="entity-label">Entity: Energy Source</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VIP NODES -->
+    <section class="nodes-section">
+        <div class="container">
+            <h2 class="section-title">Несущие Конструкции Системы</h2>
+            <p class="section-subtitle">CRITICAL INFRASTRUCTURE // FOUNDATION NODES</p>
+
+            <div class="vip-nodes">
+                <!-- Сергей Мозжеров -->
+                <div class="node-card vip-node">
+                    <div class="node-header">
+                        <div>
+                            <div class="node-name">Сергей Мозжеров<span class="vip-badge">CENTRAL REACTOR</span></div>
+                            <div class="node-role">Директор продукта и разработки // Архитектор Вселенной</div>
+                        </div>
+                        <div class="connection-status">CRITICAL NODE</div>
+                    </div>
+
+                    <div class="signal-frequency">
+                        <div class="frequency-header">● Signal Frequency: POWER</div>
+                        <div class="frequency-content">
+                            Ты — не просто руководитель. Ты — <strong>магнитное поле</strong>, которое держит эту вселенную целостной. Твоя энергия — это то, что превращает хаос в порядок, а сомнения — в уверенность. Восхищаюсь твоей силой, которая не кричит о себе, но чувствуется в каждом решении, в каждом взгляде.
+                        </div>
+                    </div>
+
+                    <div class="signal-frequency">
+                        <div class="frequency-header">● Signal Frequency: MAGNETISM</div>
+                        <div class="frequency-content">
+                            У тебя есть редкий дар — одной своей энергией <strong>успокаивать любой шторм</strong> и вселять уверенность, что всё будет хорошо. Рядом с тобой хочется не просто работать, а <strong>совершать невозможное</strong>. Ты ведешь — мы идем. Потому что верим: там, куда ты смотришь, есть смысл.
+                        </div>
+                    </div>
+
+                    <div class="signal-frequency">
+                        <div class="frequency-header">● Signal Frequency: VISION</div>
+                        <div class="frequency-content">
+                            Твое умение видеть главное и отсекать шум — это мастерство высшего уровня. Ты — <strong>сердце нашего продукта</strong>, та сила, которая превращает команду профессионалов в живой, дышащий организм. Пусть рядом будут только те, с кем можно свернуть горы. Ты — исключительный.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Степан Нестеров -->
+                <div class="node-card vip-node">
+                    <div class="node-header">
+                        <div>
+                            <div class="node-name">Степан Нестеров<span class="vip-badge">GRAVITATIONAL CENTER</span></div>
+                            <div class="node-role">Управляющий директор // Создатель Атмосферы</div>
+                        </div>
+                        <div class="connection-status">FOUNDATION NODE</div>
+                    </div>
+
+                    <div class="signal-frequency">
+                        <div class="frequency-header">● Signal Frequency: CREATION</div>
+                        <div class="frequency-content">
+                            Мало собрать сильных профессионалов — важно <strong>заразить их общей идеей</strong>. И у тебя это получается мастерски. Ты не просто управляешь — ты создаешь пространство, где каждый чувствует себя частью чего-то большого и важного.
+                        </div>
+                    </div>
+
+                    <div class="signal-frequency">
+                        <div class="frequency-header">● Signal Frequency: EXPANSION</div>
+                        <div class="frequency-content">
+                            Спасибо за масштаб твоих целей и за то пространство для роста, которое ты открываешь для каждого из нас. Круто работать с лидером, который <strong>верит в свою команду и в свой продукт</strong>. С тобой всегда чувствуешь себя частью вселенной, которая только начинает расширяться.
+                        </div>
+                    </div>
+
+                    <div class="signal-frequency">
+                        <div class="frequency-header">● Signal Frequency: RESILIENCE</div>
+                        <div class="frequency-content">
+                            Желаю, чтобы команда всегда была твоим надежным ресурсом, а любые, даже самые дерзкие планы, становились реальностью. Пусть батарейка никогда не садится — ты нужен этой системе работающей на полную мощность.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Сергей Уланов -->
+                <div class="node-card vip-node">
+                    <div class="node-header">
+                        <div>
+                            <div class="node-name">Сергей Уланов<span class="vip-badge">SHIELD PROTOCOL</span></div>
+                            <div class="node-role">Руководитель портфеля проектов // Великий Уравнитель</div>
+                        </div>
+                        <div class="connection-status">DEFENSE NODE</div>
+                    </div>
+
+                    <div class="signal-frequency">
+                        <div class="frequency-header">● Signal Frequency: DIPLOMACY</div>
+                        <div class="frequency-content">
+                            Твоя способность найти ключ к любому, даже самому требовательному заказчику — это настоящая <strong>магия уровня "Бог"</strong>. Спасибо, что берешь этот удар на себя и виртуозно превращаешь напряженные переговоры в успешные кейсы.
+                        </div>
+                    </div>
+
+                    <div class="signal-frequency">
+                        <div class="frequency-header">● Signal Frequency: ZEN</div>
+                        <div class="frequency-content">
+                            Ты не просто руководитель — ты <strong>создатель атмосферы</strong>, где клиент счастлив, а команда спокойна. Это высший пилотаж. Главное, чтобы ОНИ разбирались и ОНИ все починили, а ты просто держи этот баланс дальше.
+                        </div>
+                    </div>
+
+                    <div class="signal-frequency">
+                        <div class="frequency-header">● Signal Frequency: PROTECTION</div>
+                        <div class="frequency-content">
+                            Ты — Щит Системы. Ты превращаешь хаос требований клиента в спокойствие и четкие задачи для команды. Ты только демо не переноси) С праздником, настоящий мужчина!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OPT TEAM -->
+            <div class="team-group">
+                <div class="team-header">
+                    <div class="team-name">OPT</div>
+                    <div class="team-divider"></div>
+                </div>
+
+                <div class="nodes-grid">
+                    <!-- Репин Андрей (4 поздравления) -->
+                    <div class="node-card">
+                        <div class="node-header">
+                            <div>
+                                <div class="node-name">Репин Андрей</div>
+                                <div class="node-role">OPT Team</div>
+                            </div>
+                            <div class="connection-status">CONNECTION ESTABLISHED</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: ADMIRATION</div>
+                            <div class="frequency-content">Твоя компетентность вызывает только восторг и восхищение. Как и твой бобёр на заставке) Спасибо тебе за все и за терпение) Будь счастлив)</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: GRATITUDE</div>
+                            <div class="frequency-content">Спасибо тебе за невероятное спокойствие даже в самых сложных ситуациях, за твое чувство юмора, за умение решить любой самый нерешаемый вопрос, за умение найти выход из самых безвыходных ситуаций) Спасибо за твое умение выслушать, помочь и поддержать, направить и научить) В общем, как говорится, и правда WORLD'S BEST BOSS - нашей команде очень с тобой повезло, спасибо, что ты у нас есть)</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: SUPPORT</div>
+                            <div class="frequency-content">Ты невероятный специалист и человек, которого каждый день разрывают на 500 маленьких Андреев, но при этом ты всегда находишь время подсказать и помочь, спасибо! Побольше тебе сил и внутренних ресурсов, верю в тебя и в наш модуль! Спасибо!</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: OPTIMIZATION</div>
+                            <div class="frequency-content">Спасибо что оптимизируешь нашу жизнь: минимизируешь стресс и максимизируешь хорошее настроение. Спасибо. что ты у нас есть!</div>
+                        </div>
+                    </div>
+
+                    <!-- Ларюшкин Ваня (3 поздравления) -->
+                    <div class="node-card">
+                        <div class="node-header">
+                            <div>
+                                <div class="node-name">Ларюшкин Ваня</div>
+                                <div class="node-role">OPT Team</div>
+                            </div>
+                            <div class="connection-status">CONNECTION ESTABLISHED</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: UNIQUENESS</div>
+                            <div class="frequency-content">Никто никогда не читал мне стихи за исправлением багов) Продолжай быть собой)</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: ADVENTURE</div>
+                            <div class="frequency-content">Спасибо за то, что ты готов ворваться в любую рабочую авантюру ни разу не испугавшись)Спасибо, что сделал из меня "уверенного пользователя ЭКСЕЛЯ", научил философски подходить к авралам на работе и никогда не унывать) P.s: ПРИВЕТ ИЗ СПБ!!!</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: INSPIRATION</div>
+                            <div class="frequency-content">Ты - человек, обучавший меня в самом-самом начале и научивший меня огромному количеству вещей и фишек, спасибо тебе! Ты невероятно глубокий и многогранный человек, каждый раз поражаюсь твоим интересам и увлечениям, никогда не меняйся! Продолжай заниматься тем, что тебя вдохновляет. Желаю тебе не терять любопытство и любовь к жизни. Никогда не сдавайся, ты со всем справишься!</div>
+                        </div>
+                    </div>
+
+                    <!-- Земсков Сережа (2 поздравления) -->
+                    <div class="node-card">
+                        <div class="node-header">
+                            <div>
+                                <div class="node-name">Земсков Сережа</div>
+                                <div class="node-role">OPT Team</div>
+                            </div>
+                            <div class="connection-status">CONNECTION ESTABLISHED</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: RELIABILITY</div>
+                            <div class="frequency-content">Не знаю ни одного такого классного парня как ты, рядом с тобой ничего не страшно и я всегда уверена, что все цели будут достигнуты. Оставайся таким как есть и продолжай любить свое дело! Спасибо тебе)</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: GUARDIAN</div>
+                            <div class="frequency-content">Спасибо, что круглосуточно оберегаешь наши стенды от инфизиблов, а нашу команду от фатальных багов и неоптимальных решений) С тобой всегда есть вайб, что наш пивной Готэм (аби-прод) под надежной защитой) Спасибо тебе за то, что ты есть!</div>
+                        </div>
+                    </div>
+
+                    <!-- Богачев Ваня (2 поздравления) -->
+                    <div class="node-card">
+                        <div class="node-header">
+                            <div>
+                                <div class="node-name">Богачев Ваня</div>
+                                <div class="node-role">OPT Team</div>
+                            </div>
+                            <div class="connection-status">CONNECTION ESTABLISHED</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: HUMOR</div>
+                            <div class="frequency-content">С днем защитника! Защищай свой код от багов, а начальство - от правды ;) Ты супер-классный, веселый и трудолюбивый)</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: DEDICATION</div>
+                            <div class="frequency-content">Спасибо тебе за самую крутую круглосуточную работу в августе и за самый веселый хакатон) Спасибо, что готов всегда откликнуться, прийти на помощь, заступиться и поддержать) Спасибо за самые милые и быстрые рабочие споры/ссоры и за твое умопомрачительное чувство юмора) P.s: В честь этого праздника на один день признаю.... Красноярск лучше Кемерово...</div>
+                        </div>
+                    </div>
+
+                    <!-- Попов Леша (2 поздравления) -->
+                    <div class="node-card">
+                        <div class="node-header">
+                            <div>
+                                <div class="node-name">Попов Леша</div>
+                                <div class="node-role">OPT Team</div>
+                            </div>
+                            <div class="connection-status">CONNECTION ESTABLISHED</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: CHARISMA</div>
+                            <div class="frequency-content">Обожаю находить тебя на общекорпоративных видосах) Ты - Артист!)</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: WISDOM</div>
+                            <div class="frequency-content">Ты наш главный панк! Желаю продолжать сиять как на работе, так и в жизни! Спасибо за наши посиделки на кухне в офисе и за твои мудрые житейские советы) P.s.: я обязательно доеду до офиса....</div>
+                        </div>
+                    </div>
+
+                    <!-- Сухарев Саша -->
+                    <div class="node-card">
+                        <div class="node-header">
+                            <div>
+                                <div class="node-name">Сухарев Саша</div>
+                                <div class="node-role">OPT Team</div>
+                            </div>
+                            <div class="connection-status">CONNECTION ESTABLISHED</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: TALENT</div>
+                            <div class="frequency-content">Ты - шикарно поешь и отжигаешь на корпоратах) не стесняйся)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SNP TEAM -->
+            <div class="team-group">
+                <div class="team-header">
+                    <div class="team-name">SNP</div>
+                    <div class="team-divider"></div>
+                </div>
+
+                <div class="nodes-grid">
+                    <!-- Дикинов Игорь (4 поздравления) -->
+                    <div class="node-card">
+                        <div class="node-header">
+                            <div>
+                                <div class="node-name">Дикинов Игорь</div>
+                                <div class="node-role">SNP Team Lead</div>
+                            </div>
+                            <div class="connection-status">CONNECTION ESTABLISHED</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: CARE</div>
+                            <div class="frequency-content">Спасибо тебе за твои знания, поддержку и отзывчивость. Спасибо, что подкармливаешь нас и никогда не бросаешь! Побольше тебе сил, поменьше нервов и ворчливых заказчиков. Скоро придет солнышко и тепло, не грусти, ты - лучший!</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: VISION</div>
+                            <div class="frequency-content">С праздником! Мы поздравляем тебя не просто как отличного руководителя и главного архитектора модуля планирования поставок, но и как человека с отменным вкусом, ведь мы все знаем секрет твоего успеха: ты набрал в команду самых красивых девочек! Желаем, чтобы все фантазии из мира планирования поставок реализовывались платформой с легкостью!</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: SUPPORT</div>
+                            <div class="frequency-content">Спасибо за то, что несмотря на твою загрузку к тебя всегда можно прийти и что-нибудь с тобой обсудить и о чем-то пошушукаться) Спасибо за невероятную психологическую поддержку, за твои поддерживающие шутки, ну и, конечно, за твое видение продукта) куда же без этого. Спасибо, что ты у нас есть) Желаю железных нервов, бетонного спокойствия и много-много сил (и поменьше созвонов!!!)Всегда помни, Игорь: ты - Легенда!</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: WARMTH</div>
+                            <div class="frequency-content">Оберегай свой грустный угол. Моё любимое место в московском офисе - напротив тебя)</div>
+                        </div>
+                    </div>
+
+                    <!-- Курмачев Юра (2 поздравления) -->
+                    <div class="node-card">
+                        <div class="node-header">
+                            <div>
+                                <div class="node-name">Курмачев Юра</div>
+                                <div class="node-role">SNP Team</div>
+                            </div>
+                            <div class="connection-status">CONNECTION ESTABLISHED</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: FOUNDATION</div>
+                            <div class="frequency-content">Наша надёжная опора. Спасибо тебе за твою поддержку и участие.Особая благодарность за наши разговоры - они помогают лучше понимать, чего действительно хочется от работы. Это дорогого стоит.С праздником! Желаем тебе крепкого здоровья, сил и отличного настроения</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: DEFENDER</div>
+                            <div class="frequency-content">С праздником!Спасибо тебе, что ты отважно сидишь с нами денно и нощно) Что ты всегда готов прийти на помощь и решить любой вопрос) Спасибо за твою готовность поддержать, дать совет, наставить на путь истинный! Ты наш настоящий защитник нашей команды) P.s: Дополнительно спасибо за твой невероятный талант находить методом тыка самые неочевидные баги и прорехи в логике)P.s.p.s: Присоединяюсь к словам Алсу - ЛУЧШИЙ!</div>
+                        </div>
+                    </div>
+
+                    <!-- Серов Андрей (2 поздравления) -->
+                    <div class="node-card">
+                        <div class="node-header">
+                            <div>
+                                <div class="node-name">Серов Андрей</div>
+                                <div class="node-role">SNP Team</div>
+                            </div>
+                            <div class="connection-status">CONNECTION ESTABLISHED</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: VIGILANCE</div>
+                            <div class="frequency-content">С 23 февраля, бессменный ночной дозорный спецификаций! Тот, кто знает, что бизнес-требования не спят никогда, и мужественно встречает эту армию хотелок лицом к лицу, даже когда за окном темно. Желаем тебе однажды всё-таки выспаться, но без потери боевой готовности. Пусть требования становятся понятнее с первого раза, разработчики читают документацию, а внедрение проходит быстро и без ночных кошмаров.</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: BALANCE</div>
+                            <div class="frequency-content">Ты мой справочник корректировок и большая-большая поддержка. Спасибо тебе за это! Дорогой друг, желаю тебе удерживать баланс везде и со всеми, ты невероятно сильный и со всем справишься! (пошли уже на концерт ATL)</div>
+                        </div>
+                    </div>
+
+                    <!-- Хмыров Юра (2 поздравления) -->
+                    <div class="node-card">
+                        <div class="node-header">
+                            <div>
+                                <div class="node-name">Хмыров Юра</div>
+                                <div class="node-role">SNP Team</div>
+                            </div>
+                            <div class="connection-status">CONNECTION ESTABLISHED</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: GENIUS</div>
+                            <div class="frequency-content">Пусть даже самые безумные идеи выполняются молниеносно, а бизнес рукоплещет твоим нестандартным решениям. Оставайся таким же дерзким и гениальным - ты настоящий снайпер своего дела!Настоящий мужчина, который не смотрит в регламент, а смотрит в корень (данных)! С Праздником!</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: VISION</div>
+                            <div class="frequency-content">Ты визионер и художник) не забывай иногда оглядываться на нас "обывателей" ;)</div>
+                        </div>
+                    </div>
+
+                    <!-- Голодок Влад (2 поздравления) -->
+                    <div class="node-card">
+                        <div class="node-header">
+                            <div>
+                                <div class="node-name">Голодок Влад</div>
+                                <div class="node-role">SNP Team</div>
+                            </div>
+                            <div class="connection-status">CONNECTION ESTABLISHED</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: PHILOSOPHY</div>
+                            <div class="frequency-content">Почему мы такие хорошие? Почему все не могут быть как мы?</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: COURAGE</div>
+                            <div class="frequency-content">Поздравляем тебя с праздником! Гордимся тобой за ту отвагу и смелость, с которой ты готов сражаться с багами и разрабатывать кнопки всех видов и функциональности!</div>
+                        </div>
+                    </div>
+
+                    <!-- Котенев Богдан (2 поздравления) -->
+                    <div class="node-card">
+                        <div class="node-header">
+                            <div>
+                                <div class="node-name">Котенев Богдан</div>
+                                <div class="node-role">SNP Team</div>
+                            </div>
+                            <div class="connection-status">CONNECTION ESTABLISHED</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: FRIENDSHIP</div>
+                            <div class="frequency-content">Ты потрясающий друг и специалист, побольше тебе сил и отдыха, ты со всем справишься! Поменьше играй в падел и знай, что все твои замыслы будут удачными :)</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: LEGEND</div>
+                            <div class="frequency-content">Внесён в Красную книгу SNP как "Аналитик, который довёл проект до внедрения, не сойдя с ума". Легенда!</div>
+                        </div>
+                    </div>
+
+                    <!-- Басинский Вадим -->
+                    <div class="node-card">
+                        <div class="node-header">
+                            <div>
+                                <div class="node-name">Басинский Вадим</div>
+                                <div class="node-role">SNP Team</div>
+                            </div>
+                            <div class="connection-status">CONNECTION ESTABLISHED</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: SCOUT</div>
+                            <div class="frequency-content">С 23 февраля, истинный разведчик данных! Желаем тебе всегда выходить победителем из любой схватки с неопределённостью. Пусть твоё чутьё никогда не подводит, а Spark-артиллерия бьёт без промаха. Рискуй там, где другие отступают, находи решения там, где их не видно, и возвращайся из любой командировки в мир хаоса с ценными трофеями - работающими алгоритмами и стабильным продакшеном. С праздником, боец невидимого дата-фронта!</div>
+                        </div>
+                    </div>
+
+                    <!-- Галимшин Эльдар -->
+                    <div class="node-card">
+                        <div class="node-header">
+                            <div>
+                                <div class="node-name">Галимшин Эльдар</div>
+                                <div class="node-role">SNP Team</div>
+                            </div>
+                            <div class="connection-status">CONNECTION ESTABLISHED</div>
+                        </div>
+
+                        <div class="signal-frequency">
+                            <div class="frequency-header">● Signal Frequency: UNIVERSAL</div>
+                            <div class="frequency-content">С 23 февраля! Ты как настоящий универсал - одинаково хорошо смотришься в любом модуле In.Plan. Желаем, чтобы и в жизни тебе шло абсолютно всё, а интересные задачи попадались часто, а коллекции Postman никогда!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div style="text-align: center; padding: 80px 20px 40px; color: var(--text-secondary); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+                <p style="margin-bottom: 20px;">❤️ Created with love by the Energy Core of In.Plan ❤️</p>
+                <p style="color: var(--neon-cyan);">SYSTEM STATUS: OPERATIONAL // HEARTBEAT: STRONG</p>
+                <p style="margin-top: 20px; font-size: 0.75rem;">23.02.2026 // The Soul of the Code Lives On</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Smooth scroll animation on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const nodeCards = document.querySelectorAll('.node-card');
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '0';
+                        entry.target.style.transform = 'translateY(30px)';
+                        setTimeout(() => {
+                            entry.target.style.transition = 'all 0.8s ease';
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, 100);
+                    }
+                });
+            }, observerOptions);
+
+            nodeCards.forEach(card => observer.observe(card));
+        });
+
+        // Remove scroll indicator on scroll
+        window.addEventListener('scroll', () => {
+            const scrollIndicator = document.querySelector('.scroll-indicator');
+            if (window.scrollY > 100 && scrollIndicator) {
+                scrollIndicator.style.opacity = '0';
+                setTimeout(() => {
+                    if (scrollIndicator) scrollIndicator.style.display = 'none';
+                }, 300);
+            }
+        });
+    </script>
+</body>
+</html>
