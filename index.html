@@ -4,10 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Performance optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+
     <title>The Soul of the In.Plan</title>
     <link rel="icon" href="favicon.ico" sizes="any">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <!-- Preload first visible photos for instant display -->
+    <link rel="preload" as="image" href="photos/Anastasiia Bakhitova.webp">
+    <link rel="preload" as="image" href="photos/Anna Fedina.webp">
+    <link rel="preload" as="image" href="photos/Anna Kachurina.webp">
+    <link rel="preload" as="image" href="photos/Anna Klimuk.webp">
+    <link rel="preload" as="image" href="photos/Anna Stryukova.webp">
+    <link rel="preload" as="image" href="photos/Anna Voronkina.webp">
+
+    <link rel="apple-touch-icon" href="apple-touch-icon.webp">
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
@@ -1299,132 +1311,132 @@
 
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Anastasiia Bakhitova.png" alt="Energy" title="Бахитова Настя">
+                    <img loading="eager" fetchpriority="high" decoding="async" src="photos/Anastasiia Bakhitova.webp" alt="Energy" title="Бахитова Настя">
                     <div class="entity-label">Entity: Бахитова Настя</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Anna Kachurina.png" alt="Energy" title="Качурина Аня">
+                    <img loading="eager" fetchpriority="high" decoding="async" src="photos/Anna Kachurina.webp" alt="Energy" title="Качурина Аня">
                     <div class="entity-label">Entity: Качурина Аня</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Anna Klimuk.png" alt="Energy" title="Климук Аня">
+                    <img loading="eager" fetchpriority="high" decoding="async" src="photos/Anna Klimuk.webp" alt="Energy" title="Климук Аня">
                     <div class="entity-label">Entity: Климук Аня</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Anna Stryukova.png" alt="Energy" title="Стрюкова Аня">
+                    <img loading="eager" fetchpriority="high" decoding="async" src="photos/Anna Stryukova.webp" alt="Energy" title="Стрюкова Аня">
                     <div class="entity-label">Entity: Стрюкова Аня</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Anna Voronkina.png" alt="Energy" title="Воронкина Аня">
+                    <img loading="eager" fetchpriority="high" decoding="async" src="photos/Anna Voronkina.webp" alt="Energy" title="Воронкина Аня">
                     <div class="entity-label">Entity: Воронкина Аня</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Arina Korotchenko.png" alt="Energy" title="Коротченко Арина">
+                    <img loading="eager" fetchpriority="high" decoding="async" src="photos/Arina Korotchenko.webp" alt="Energy" title="Коротченко Арина">
                     <div class="entity-label">Entity: Коротченко Арина</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Daria Akindinova.png" alt="Energy" title="Акиндинова Даша">
+                    <img loading="lazy" decoding="async" src="photos/Daria Akindinova.webp" alt="Energy" title="Акиндинова Даша">
                     <div class="entity-label">Entity: Акиндинова Даша</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Darya Buksha.png" alt="Energy" title="Букша Даша">
+                    <img loading="lazy" decoding="async" src="photos/Darya Buksha.webp" alt="Energy" title="Букша Даша">
                     <div class="entity-label">Entity: Букша Даша</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Darya Minina.png" alt="Energy" title="Минина Даша">
+                    <img loading="lazy" decoding="async" src="photos/Darya Minina.webp" alt="Energy" title="Минина Даша">
                     <div class="entity-label">Entity: Минина Даша</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Ekaterina Suslova.png" alt="Energy" title="Суслова Катя">
+                    <img loading="lazy" decoding="async" src="photos/Ekaterina Suslova.webp" alt="Energy" title="Суслова Катя">
                     <div class="entity-label">Entity: Суслова Катя</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Elizaveta Lupeko.png" alt="Energy" title="Лупеко Лиза">
+                    <img loading="lazy" decoding="async" src="photos/Elizaveta Lupeko.webp" alt="Energy" title="Лупеко Лиза">
                     <div class="entity-label">Entity: Лупеко Лиза</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Eseniya Borodina.png" alt="Energy" title="Бородина Есения">
+                    <img loading="lazy" decoding="async" src="photos/Eseniya Borodina.webp" alt="Energy" title="Бородина Есения">
                     <div class="entity-label">Entity: Бородина Есения</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Galina Gurzhieva.png" alt="Energy" title="Гуржиева Галя">
+                    <img loading="lazy" decoding="async" src="photos/Galina Gurzhieva.webp" alt="Energy" title="Гуржиева Галя">
                     <div class="entity-label">Entity: Гуржиева Галя</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Julia Bryukhanova.png" alt="Energy" title="Брюханова Юля">
+                    <img loading="lazy" decoding="async" src="photos/Julia Bryukhanova.webp" alt="Energy" title="Брюханова Юля">
                     <div class="entity-label">Entity: Брюханова Юля</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Kseniya Sapelnikova.png" alt="Energy" title="Сапельникова Ксения">
+                    <img loading="lazy" decoding="async" src="photos/Kseniya Sapelnikova.webp" alt="Energy" title="Сапельникова Ксения">
                     <div class="entity-label">Entity: Сапельникова Ксения</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Margarita Butova.png" alt="Energy" title="Бутова Маргарита">
+                    <img loading="lazy" decoding="async" src="photos/Margarita Butova.webp" alt="Energy" title="Бутова Маргарита">
                     <div class="entity-label">Entity: Бутова Маргарита</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Natalia Novikova.png" alt="Energy" title="Новикова Наташа">
+                    <img loading="lazy" decoding="async" src="photos/Natalia Novikova.webp" alt="Energy" title="Новикова Наташа">
                     <div class="entity-label">Entity: Новикова Наташа</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Natalia Yakovleva.png" alt="Energy" title="Яковлева Наташа">
+                    <img loading="lazy" decoding="async" src="photos/Natalia Yakovleva.webp" alt="Energy" title="Яковлева Наташа">
                     <div class="entity-label">Entity: Яковлева Наташа</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Natalya Galyaeva.png" alt="Energy" title="Галяева Наташа">
+                    <img loading="lazy" decoding="async" src="photos/Natalya Galyaeva.webp" alt="Energy" title="Галяева Наташа">
                     <div class="entity-label">Entity: Галяева Наташа</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Tatyana Soldatova.png" alt="Energy" title="Солдатова Таня">
+                    <img loading="lazy" decoding="async" src="photos/Tatyana Soldatova.webp" alt="Energy" title="Солдатова Таня">
                     <div class="entity-label">Entity: Солдатова Таня</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Viktoriia Efimova.png" alt="Energy" title="Ефимова Вика">
+                    <img loading="lazy" decoding="async" src="photos/Viktoriia Efimova.webp" alt="Energy" title="Ефимова Вика">
                     <div class="entity-label">Entity: Ефимова Вика</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Viktoriya Malyshenko.png" alt="Energy" title="Малышенко Вика">
+                    <img loading="lazy" decoding="async" src="photos/Viktoriya Malyshenko.webp" alt="Energy" title="Малышенко Вика">
                     <div class="entity-label">Entity: Малышенко Вика</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Ахметова Елизавета.png" alt="Energy" title="Ахметова Лиза">
+                    <img loading="lazy" decoding="async" src="photos/Ахметова Елизавета.webp" alt="Energy" title="Ахметова Лиза">
                     <div class="entity-label">Entity: Ахметова Лиза</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Ибрагимова Амина.png" alt="Energy" title="Ибрагимова Амина">
+                    <img loading="lazy" decoding="async" src="photos/Ибрагимова Амина.webp" alt="Energy" title="Ибрагимова Амина">
                     <div class="entity-label">Entity: Ибрагимова Амина</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Малова Наталья.png" alt="Energy" title="Малова Наташа">
+                    <img loading="lazy" decoding="async" src="photos/Малова Наталья.webp" alt="Energy" title="Малова Наташа">
                     <div class="entity-label">Entity: Малова Наташа</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Самейко Валерия.png" alt="Energy" title="Самейко Лера">
+                    <img loading="lazy" decoding="async" src="photos/Самейко Валерия.webp" alt="Energy" title="Самейко Лера">
                     <div class="entity-label">Entity: Самейко Лера</div>
                 </div>
                 
@@ -1435,42 +1447,42 @@
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Хуснутдинова Эльмира.png" alt="Energy" title="Хуснутдинова Эля">
+                    <img loading="lazy" decoding="async" src="photos/Хуснутдинова Эльмира.webp" alt="Energy" title="Хуснутдинова Эля">
                     <div class="entity-label">Entity: Хуснутдинова Эля</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Цветкова Анастасия.png" alt="Energy" title="Цветкова Настя">
+                    <img loading="lazy" decoding="async" src="photos/Цветкова Анастасия.webp" alt="Energy" title="Цветкова Настя">
                     <div class="entity-label">Entity: Цветкова Настя</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Ekaterina Tkachenko.png" alt="Energy" title="Ткаченко Катя">
+                    <img loading="lazy" decoding="async" src="photos/Ekaterina Tkachenko.webp" alt="Energy" title="Ткаченко Катя">
                     <div class="entity-label">Entity: Ткаченко Катя</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Anna Fedina.png" alt="Energy" title="Федина Аня">
+                    <img loading="lazy" decoding="async" src="photos/Anna Fedina.webp" alt="Energy" title="Федина Аня">
                     <div class="entity-label">Entity: Федина Аня</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Ekaterina Moreva.png" alt="Energy" title="Морева Катя">
+                    <img loading="lazy" decoding="async" src="photos/Ekaterina Moreva.webp" alt="Energy" title="Морева Катя">
                     <div class="entity-label">Entity: Морева Катя</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Julia Shutikhina.png" alt="Energy" title="Шутихина Юля">
+                    <img loading="lazy" decoding="async" src="photos/Julia Shutikhina.webp" alt="Energy" title="Шутихина Юля">
                     <div class="entity-label">Entity: Шутихина Юля</div>
                 </div>
 
                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Фомина Оля.png" alt="Energy" title="Фомина Оля">
+                    <img loading="lazy" decoding="async" src="photos/Фомина Оля.webp" alt="Energy" title="Фомина Оля">
                     <div class="entity-label">Entity: Фомина Оля</div>
                 </div>
 
                                 <div class="energy-node">
-                    <img loading="lazy" decoding="async" src="photos/Дизенгоф Юля.png" alt="Energy" title="Дизенгоф Юля">
+                    <img loading="lazy" decoding="async" src="photos/Дизенгоф Юля.webp" alt="Energy" title="Дизенгоф Юля">
                     <div class="entity-label">Entity: Дизенгоф Юля</div>
                 </div>
 
