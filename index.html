@@ -442,6 +442,7 @@
             transition: transform 180ms var(--ease-out), box-shadow 180ms var(--ease-out), border-color 180ms var(--ease-out);
             transition-duration: 180ms;
             cursor: pointer;
+            touch-action: manipulation;
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp .6s ease forwards;
@@ -3382,29 +3383,64 @@
         const modal = document.getElementById('girlModal');
         const imgEl = document.getElementById('girlModalImg');
         const nameEl = document.getElementById('girlModalName');
+        let ignoreClickUntil = 0;
         
         const close = () => {
             modal.classList.remove('is-open');
             document.body.classList.remove('modal-open');
         };
+
+        const extractNodeName = (node) => {
+            const label = node.querySelector('.entity-label');
+            const img = node.querySelector('img');
+            const byLabel = label ? label.textContent.replace(/^Entity:\s*/i, '').trim() : '';
+            const byTitle = img ? (img.getAttribute('title') || '').trim() : '';
+            const byAlt = img ? (img.getAttribute('alt') || '').trim() : '';
+            return byLabel || byTitle || byAlt || 'Energy Node';
+        };
+
+        const openNodeModal = (node) => {
+            if (!node || !modal || !imgEl || !nameEl) return;
+            const img = node.querySelector('img');
+            if (!img) return;
+            const name = extractNodeName(node);
+            imgEl.src = img.currentSrc || img.src;
+            imgEl.alt = name;
+            nameEl.textContent = name;
+            modal.classList.add('is-open');
+            document.body.classList.add('modal-open');
+            if (window.neuralEnergySystem) window.neuralEnergySystem.pulseNode(node);
+        };
+
+        document.querySelectorAll('.photos-constellation .energy-node').forEach((node) => {
+            if (!node.hasAttribute('tabindex')) node.setAttribute('tabindex', '0');
+            if (!node.hasAttribute('role')) node.setAttribute('role', 'button');
+
+            node.addEventListener('pointerup', (e) => {
+                if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+                    ignoreClickUntil = Date.now() + 450;
+                    openNodeModal(node);
+                }
+            }, { passive: true });
+
+            node.addEventListener('touchend', () => {
+                ignoreClickUntil = Date.now() + 450;
+                openNodeModal(node);
+            }, { passive: true });
+
+            node.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openNodeModal(node);
+                }
+            });
+        });
         
         document.addEventListener('click', (e) => {
             const node = e.target.closest('.photos-constellation .energy-node');
             if (node) {
-                const img = node.querySelector('img');
-                const label = node.querySelector('.entity-label');
-                const name = label ? label.textContent.replace(/^Entity:\s*/i, '') : '';
-                
-                if (img) {
-                    imgEl.src = img.currentSrc || img.src;
-                    imgEl.alt = name;
-                    nameEl.textContent = name;
-                    modal.classList.add('is-open');
-                    document.body.classList.add('modal-open');
-                }
-                
-                // ?????????? ?????? ?????
-                if (window.neuralEnergySystem) window.neuralEnergySystem.pulseNode(node);
+                if (Date.now() < ignoreClickUntil) return;
+                openNodeModal(node);
             }
             
             if (e.target.closest('.girl-modal__close') || e.target.closest('.girl-modal__overlay')) {
