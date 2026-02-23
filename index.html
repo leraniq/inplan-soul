@@ -418,9 +418,12 @@
         /* Neural layer для будущих связей */
         .neural-layer {
             position: absolute;
-            inset: -10%;
+            inset: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
             z-index: 0;
+            opacity: 1;
         }
 
         .energy-node {
@@ -473,16 +476,16 @@
             opacity: 0;
             background:
                 radial-gradient(
-                    140px circle at var(--mx) var(--my),
-                    rgba(0, 246, 255, 0.22),
-                    rgba(131, 56, 236, 0.16) 36%,
+                    180px circle at var(--mx) var(--my),
+                    rgba(0, 246, 255, 0.34),
+                    rgba(131, 56, 236, 0.22) 34%,
                     transparent 72%
                 );
             transition: opacity 220ms cubic-bezier(.16,1,.3,1);
         }
 
         .energy-node:hover::before {
-            opacity: 1;
+            opacity: 0.95;
         }
 
         .energy-node.is-pulsing {
@@ -714,8 +717,13 @@
         }
 
         .energy-node:hover::after {
-            opacity: 0.7;
+            opacity: 0.9;
             transform: translateX(125%);
+        }
+
+        .energy-node.is-salute {
+            border-color: rgba(0,246,255,0.75);
+            box-shadow: 0 0 0 1px rgba(0,246,255,0.28), 0 14px 42px rgba(0,0,0,0.48), 0 0 36px rgba(0,246,255,0.24);
         }
 
 
@@ -2679,16 +2687,20 @@
             this.ctx = this.canvas.getContext('2d');
             this.nodes = [];
             this.sparks = [];
+            this.pulses = [];
+            this.shocks = [];
             this.activeNode = null;
             this.mouseX = -1000;
             this.mouseY = -1000;
+            this.mouseActive = false;
             this.dpr = window.devicePixelRatio || 1;
             this.connectionRadius = 200;
             this.maxSparks = 220;
             this.frameCount = 0;
             this.mobileQuality = window.matchMedia('(max-width: 900px), (hover: none)').matches;
             this.reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            this.trailInterval = this.mobileQuality ? 16 : 10;
+            this.trailInterval = this.mobileQuality ? 14 : 8;
+            this.meshRadius = this.mobileQuality ? 170 : 240;
             this.rafId = null;
             this.isRunning = false;
             this.isInViewport = true;
@@ -2707,11 +2719,14 @@
                     const rect = this.canvas.getBoundingClientRect();
                     this.mouseX = e.clientX - rect.left;
                     this.mouseY = e.clientY - rect.top;
+                    this.mouseActive = true;
                     this.checkHover(this.mouseX, this.mouseY);
                 });
                 section.addEventListener('mouseleave', () => {
                     this.mouseX = -1000;
                     this.mouseY = -1000;
+                    this.mouseActive = false;
+                    this.activeNode = null;
                 });
             }
 
@@ -2773,10 +2788,18 @@
                     el.addEventListener('pointerenter', () => {
                         const currentNode = this.getNodeByElement(el) || node;
                         this.activeNode = currentNode;
+                        this.mouseActive = true;
+                        this.mouseX = currentNode.x;
+                        this.mouseY = currentNode.y;
+                        el.classList.add('is-salute');
+                        this.createImpulse(currentNode.x, currentNode.y, 'strong');
+                        this.createShock(currentNode.x, currentNode.y);
                         this.createBurst(currentNode.x, currentNode.y, 'burst');
                     }, { passive: true });
                     el.addEventListener('pointerleave', () => {
                         if (this.activeNode && this.activeNode.el === el) this.activeNode = null;
+                        if (!this.activeNode) this.mouseActive = false;
+                        el.classList.remove('is-salute');
                     }, { passive: true });
                     el.addEventListener('pointermove', (e) => {
                         const r = el.getBoundingClientRect();
@@ -2787,6 +2810,30 @@
                     }, { passive: true });
                 }
             });
+        }
+
+        createImpulse(x, y, strength = 'normal') {
+            const scale = strength === 'strong' ? 1.25 : 1;
+            this.pulses.push({
+                x,
+                y,
+                r: 10,
+                maxR: (this.mobileQuality ? 90 : 130) * scale,
+                life: 1,
+                decay: this.mobileQuality ? 0.04 : 0.03
+            });
+            if (this.pulses.length > 20) this.pulses.splice(0, this.pulses.length - 20);
+        }
+
+        createShock(x, y) {
+            this.shocks.push({
+                x,
+                y,
+                life: 1,
+                decay: this.mobileQuality ? 0.065 : 0.05,
+                rays: this.mobileQuality ? 8 : 12
+            });
+            if (this.shocks.length > 8) this.shocks.splice(0, this.shocks.length - 8);
         }
 
         getNodeByElement(el) {
@@ -2807,6 +2854,7 @@
                 if (dist < node.radius) {
                     if (!node.triggered) {
                         if (!this.reduceMotion) this.createBurst(node.x, node.y, 'trail');
+                        if (!this.reduceMotion) this.createImpulse(node.x, node.y, 'normal');
                         node.triggered = true;
                         this.activeNode = node;
                     }
@@ -2818,8 +2866,8 @@
         }
 
         createBurst(x, y, mode = 'burst') {
-            const burstCount = this.mobileQuality ? 30 : 42;
-            const trailCount = this.mobileQuality ? 3 : 5;
+            const burstCount = this.mobileQuality ? 36 : 60;
+            const trailCount = this.mobileQuality ? 4 : 6;
             const count = this.reduceMotion
                 ? (mode === 'trail' ? 0 : 10)
                 : (mode === 'trail' ? trailCount : burstCount);
@@ -2834,13 +2882,15 @@
                 this.sparks.push({
                     x,
                     y,
+                    px: x,
+                    py: y,
                     vx: Math.cos(angle) * speed,
                     vy: Math.sin(angle) * speed * 0.92,
                     life: 1,
                     decay: mode === 'trail'
                         ? (this.mobileQuality ? 0.065 : 0.058)
                         : (this.mobileQuality ? 0.042 : 0.036),
-                    size: mode === 'trail' ? (Math.random() * 1.1 + 0.8) : (Math.random() * 1.8 + 1.0),
+                    size: mode === 'trail' ? (Math.random() * 1.4 + 1.0) : (Math.random() * 2.4 + 1.4),
                     color: palette[(Math.random() * palette.length) | 0]
                 });
             }
@@ -2853,11 +2903,13 @@
                     this.sparks.push({
                         x,
                         y,
+                        px: x,
+                        py: y,
                         vx: Math.cos(angle) * speed,
                         vy: Math.sin(angle) * speed * 0.85,
                         life: 1,
                         decay: this.mobileQuality ? 0.024 : 0.02,
-                        size: Math.random() * 2 + 2.2,
+                        size: Math.random() * 2.8 + 2.6,
                         color: ['#00f6ff', '#ff006e', '#8338ec'][i % 3]
                     });
                 }
@@ -2873,6 +2925,49 @@
             this.frameCount++;
 
             this.ctx.clearRect(0, 0, this.canvas.width / this.dpr, this.canvas.height / this.dpr);
+            this.ctx.globalCompositeOperation = 'source-over';
+
+            if (this.mouseActive) {
+                const coreR = this.mobileQuality ? 56 : 74;
+                const core = this.ctx.createRadialGradient(
+                    this.mouseX, this.mouseY, 2,
+                    this.mouseX, this.mouseY, coreR
+                );
+                core.addColorStop(0, this.reduceMotion ? 'rgba(0,246,255,0.14)' : 'rgba(0,246,255,0.24)');
+                core.addColorStop(0.45, 'rgba(131,56,236,0.12)');
+                core.addColorStop(1, 'rgba(0,246,255,0)');
+                this.ctx.fillStyle = core;
+                this.ctx.beginPath();
+                this.ctx.arc(this.mouseX, this.mouseY, coreR, 0, Math.PI * 2);
+                this.ctx.fill();
+            }
+
+            const maxDist = this.mobileQuality ? 150 : 190;
+            for (let i = 0; i < this.nodes.length; i++) {
+                for (let j = i + 1; j < this.nodes.length; j++) {
+                    const a = this.nodes[i];
+                    const b = this.nodes[j];
+                    const d = Math.hypot(a.x - b.x, a.y - b.y);
+                    if (d > maxDist) continue;
+
+                    let influence = 0.35;
+                    if (this.mouseActive) {
+                        const da = Math.hypot(this.mouseX - a.x, this.mouseY - a.y);
+                        const db = Math.hypot(this.mouseX - b.x, this.mouseY - b.y);
+                        const near = Math.min(da, db);
+                        influence = Math.max(0.12, 1 - near / this.meshRadius);
+                    }
+
+                    const alpha = (1 - d / maxDist) * influence * (this.reduceMotion ? 0.22 : 0.45);
+                    if (alpha <= 0.02) continue;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(a.x, a.y);
+                    this.ctx.lineTo(b.x, b.y);
+                    this.ctx.strokeStyle = `rgba(0,246,255,${alpha.toFixed(3)})`;
+                    this.ctx.lineWidth = 1;
+                    this.ctx.stroke();
+                }
+            }
 
             this.nodes.forEach(node => {
                 const dist = Math.hypot(this.mouseX - node.x, this.mouseY - node.y);
@@ -2889,10 +2984,62 @@
 
             if (this.activeNode && !this.reduceMotion && this.frameCount % this.trailInterval === 0) {
                 this.createBurst(this.activeNode.x, this.activeNode.y, 'trail');
+                if (!this.mobileQuality && this.frameCount % (this.trailInterval * 2) === 0) {
+                    this.createImpulse(this.activeNode.x, this.activeNode.y, 'normal');
+                }
+            }
+
+            this.ctx.globalCompositeOperation = 'lighter';
+            for (let i = this.pulses.length - 1; i >= 0; i--) {
+                const p = this.pulses[i];
+                p.r += this.mobileQuality ? 1.6 : 2.2;
+                p.life -= p.decay;
+                if (p.life <= 0 || p.r > p.maxR) {
+                    this.pulses.splice(i, 1);
+                    continue;
+                }
+
+                this.ctx.beginPath();
+                this.ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                this.ctx.strokeStyle = `rgba(0,246,255,${(p.life * 0.55).toFixed(3)})`;
+                this.ctx.lineWidth = 1.2;
+                this.ctx.stroke();
+
+                if (!this.reduceMotion) {
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.r * 0.72, 0, Math.PI * 2);
+                    this.ctx.strokeStyle = `rgba(255,0,110,${(p.life * 0.35).toFixed(3)})`;
+                    this.ctx.lineWidth = 0.9;
+                    this.ctx.stroke();
+                }
+            }
+
+            for (let i = this.shocks.length - 1; i >= 0; i--) {
+                const s = this.shocks[i];
+                s.life -= s.decay;
+                if (s.life <= 0) {
+                    this.shocks.splice(i, 1);
+                    continue;
+                }
+
+                this.ctx.globalAlpha = s.life * 0.9;
+                for (let r = 0; r < s.rays; r++) {
+                    const a = (Math.PI * 2 * r) / s.rays + (1 - s.life) * 0.3;
+                    const len = (this.mobileQuality ? 30 : 44) * (1 - s.life * 0.45);
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(s.x, s.y);
+                    this.ctx.lineTo(s.x + Math.cos(a) * len, s.y + Math.sin(a) * len);
+                    this.ctx.strokeStyle = r % 2 ? 'rgba(0,246,255,0.7)' : 'rgba(255,0,110,0.62)';
+                    this.ctx.lineWidth = 1.15;
+                    this.ctx.stroke();
+                }
+                this.ctx.globalAlpha = 1;
             }
 
             for (let i = this.sparks.length - 1; i >= 0; i--) {
                 const sp = this.sparks[i];
+                sp.px = sp.x;
+                sp.py = sp.y;
                 sp.x += sp.vx;
                 sp.y += sp.vy;
                 sp.vx *= 0.986;
@@ -2903,6 +3050,14 @@
                     this.sparks.splice(i, 1);
                 } else {
                     this.ctx.beginPath();
+                    this.ctx.moveTo(sp.px, sp.py);
+                    this.ctx.lineTo(sp.x, sp.y);
+                    this.ctx.strokeStyle = sp.color;
+                    this.ctx.globalAlpha = Math.max(0, sp.life * 0.5);
+                    this.ctx.lineWidth = 1;
+                    this.ctx.stroke();
+
+                    this.ctx.beginPath();
                     this.ctx.arc(sp.x, sp.y, (sp.size || 2) * sp.life, 0, Math.PI * 2);
                     this.ctx.fillStyle = sp.color;
                     this.ctx.globalAlpha = Math.max(0, sp.life * 0.92);
@@ -2910,6 +3065,7 @@
                     this.ctx.globalAlpha = 1;
                 }
             }
+            this.ctx.globalCompositeOperation = 'source-over';
 
             this.rafId = requestAnimationFrame(() => this.animate());
         }
@@ -2919,6 +3075,8 @@
             const containerRect = this.canvas.getBoundingClientRect();
             const x = rect.left - containerRect.left + rect.width / 2;
             const y = rect.top - containerRect.top + rect.height / 2;
+            this.createImpulse(x, y, 'strong');
+            this.createShock(x, y);
             this.createBurst(x, y, 'burst');
             if (!this.reduceMotion) this.createBurst(x, y, 'trail');
         }

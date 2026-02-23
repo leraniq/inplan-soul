@@ -190,11 +190,50 @@
   // 2. СИСТЕМНАЯ ЛОГИКА
   // ==============================================
   const badgeRules = [
-    ['aqa', 'RELIABILITY ENGINE'], ['qa', 'QUALITY SENTINEL'], ['test', 'QUALITY SENTINEL'],
-    ['analyst', 'SIGNAL INTERPRETER'], ['frontend', 'INTERFACE SMITH'], ['backend', 'CORE BUILDER'],
-    ['developer', 'CODE ARTISAN'], ['architect', 'SYSTEM ARCHITECT'], ['devops', 'DEPLOYMENT FORGE'],
-    ['manager', 'FLOW CONDUCTOR'], ['owner', 'VISION KEEPER'], ['lead', 'SYSTEM LEAD'],
-    ['designer', 'INTERFACE ALCHEMIST']
+    ['business analyst', 'REQUIREMENTS ORACLE'],
+    ['бизнес аналитик', 'REQUIREMENTS ORACLE'],
+    ['business-analyst', 'REQUIREMENTS ORACLE'],
+    ['ba', 'REQUIREMENTS ORACLE'],
+    ['system analyst', 'SYSTEM CARTOGRAPHER'],
+    ['системный аналитик', 'SYSTEM CARTOGRAPHER'],
+    ['system-analyst', 'SYSTEM CARTOGRAPHER'],
+    ['sa', 'SYSTEM CARTOGRAPHER'],
+    ['data engineer', 'INSIGHT ENGINE'],
+    ['data-engineer', 'INSIGHT ENGINE'],
+    ['аналитик данных', 'INSIGHT ENGINE'],
+    ['ml engineer', 'MODEL WEAVER'],
+    ['ml-engineer', 'MODEL WEAVER'],
+    ['machine learning engineer', 'MODEL WEAVER'],
+    ['qa', 'QUALITY SENTINEL'],
+    ['manual qa', 'QUALITY SENTINEL'],
+    ['тестировщик', 'QUALITY SENTINEL'],
+    ['aqa', 'RELIABILITY ENGINE'],
+    ['automation qa', 'RELIABILITY ENGINE'],
+    ['sdet', 'RELIABILITY ENGINE'],
+    ['frontend', 'INTERFACE SMITH'],
+    ['front end', 'INTERFACE SMITH'],
+    ['front end dev', 'INTERFACE SMITH'],
+    ['frontend dev', 'INTERFACE SMITH'],
+    ['fe', 'INTERFACE SMITH'],
+    ['backend', 'CORE BUILDER'],
+    ['back end', 'CORE BUILDER'],
+    ['back end dev', 'CORE BUILDER'],
+    ['backend dev', 'CORE BUILDER'],
+    ['be', 'CORE BUILDER'],
+    ['architect', 'SIGNAL INTERPRETER'],
+    ['архитектор', 'SIGNAL INTERPRETER'],
+    ['devops', 'DEPLOYMENT FORGE'],
+    ['devops-engineer', 'DEPLOYMENT FORGE'],
+    ['pmo', 'RHYTHM COORDINATOR'],
+    ['ui ux', 'INTERFACE ALCHEMIST'],
+    ['product owner', 'VISION KEEPER'],
+    ['po', 'VISION KEEPER'],
+    ['lead', 'FORGE COMMANDER'],
+    ['tl', 'ORCHESTRATION LEAD'],
+    ['designer', 'INTERFACE ALCHEMIST'],
+    ['дизайнер', 'INTERFACE ALCHEMIST'],
+    ['sql dev', 'QUERY ALCHEMIST'],
+    ['sql developer', 'QUERY ALCHEMIST']
   ];
 
   const signalIconMap = {
@@ -208,11 +247,25 @@
   const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function escapeHtml(v) { return String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 
-  function mapBadge(member) {
+  function normalizeRole(role) {
+    return (role || '')
+      .toLowerCase()
+      .replace(/[\/,_-]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function mapBadge(member, teamId) {
     const preset = (member.badge || '').trim();
-    if (preset && preset !== 'SIGNAL NODE') return preset;
-    const role = (member.role || '').toLowerCase();
-    for (const [key, badge] of badgeRules) { if (role.includes(key)) return badge; }
+    if (teamId === 'leadership' && preset && preset !== 'SIGNAL NODE') return preset;
+    const role = normalizeRole(member.role);
+    if (role.includes('stream lead')) return 'ORCHESTRATION LEAD';
+    if (role.includes('lead')) return 'FORGE COMMANDER';
+    if (teamId === 'team-support') return 'SERVICE GUARDIAN';
+    if (teamId === 'team-sales') return 'REVENUE ORCHESTRA';
+    for (const [key, badge] of badgeRules) {
+      if (role.includes(key)) return badge;
+    }
     return 'SIGNAL SPECIALIST';
   }
 
@@ -249,7 +302,7 @@
             return `
               <div class="${classes.join(' ').trim()}">
                 <div class="node-header"><div class="node-name">${escapeHtml(m.name || '')}</div></div>
-                <div class="badge">${escapeHtml(mapBadge(m))}</div>
+                <div class="badge">${escapeHtml(mapBadge(m, teamId))}</div>
                 <div class="node-role">${escapeHtml(m.role || '')}</div>
                 ${renderSignals(m.frequencies || [])}
               </div>
