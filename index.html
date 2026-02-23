@@ -1767,7 +1767,7 @@
                 color: rgba(232,241,255,0.62) !important;
             }
 
-            .nav-overlay{ z-index: 10015 !important; pointer-events: auto !important; }
+            .nav-overlay{ z-index: 10015 !important; pointer-events: none !important; }
             .nav-item *{ pointer-events: auto !important; }
 
             .team-navigator::before,
@@ -1793,7 +1793,7 @@
 
             body.nav-open .nav-overlay {
                 opacity: 1;
-                pointer-events: auto;
+                pointer-events: auto !important;
             }
 
             body.nav-open {
@@ -2256,6 +2256,20 @@
 
         @media (max-width: 1024px) {
             .team-fab { display: inline-flex; }
+            /* Mobile rendering stability:
+               avoid content-visibility/contain clipping long accordion sections */
+            .nodes-section,
+            .team-group {
+                content-visibility: visible !important;
+                contain: none !important;
+                contain-intrinsic-size: auto !important;
+            }
+            .team-group .nodes-grid {
+                max-height: none !important;
+                overflow: visible !important;
+                opacity: 1 !important;
+                transform: none !important;
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -3454,7 +3468,7 @@
         }
     });
 </script>
-<script src="teams-runtime.js"></script>
+<script src="teams-runtime.js?v=20260223-badges-5"></script>
 
 </body>
 </html>

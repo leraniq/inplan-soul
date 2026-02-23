@@ -326,9 +326,21 @@
 
     // Force visibility to avoid hidden groups when CSS animation/content-visibility conflicts
     root.querySelectorAll('.team-group').forEach((group) => {
+      group.style.display = 'block';
       group.style.opacity = '1';
       group.style.transform = 'translateY(0)';
+      group.style.contentVisibility = 'visible';
+      group.style.contain = 'none';
       group.classList.add('visible');
+
+      const grid = group.querySelector('.nodes-grid');
+      if (grid) {
+        grid.style.display = 'grid';
+        grid.style.maxHeight = 'none';
+        grid.style.overflow = 'visible';
+        grid.style.opacity = '1';
+        grid.style.transform = 'none';
+      }
     });
   }
 
@@ -355,12 +367,9 @@
       });
     };
 
-    if (isMobile()) {
-      const leadership = groups.find((g) => g.id === 'leadership') || groups[0];
-      if (leadership) setOpen(leadership);
-    } else {
-      openAll();
-    }
+    // Keep all teams visible by default on every viewport.
+    // This avoids "only leadership visible" behavior on mobile with collapsed grids + containment.
+    openAll();
 
     groups.forEach((group) => {
       const header = group.querySelector('.team-header');
@@ -368,7 +377,8 @@
       header.setAttribute('aria-expanded', group.classList.contains('is-open') ? 'true' : 'false');
       header.addEventListener('click', () => {
         if (isMobile()) {
-          setOpen(group);
+          const open = group.classList.toggle('is-open');
+          header.setAttribute('aria-expanded', String(open));
           return;
         }
         const open = group.classList.toggle('is-open');
@@ -380,6 +390,21 @@
   function initStaggeredGridAnimation() {
     const grids = document.querySelectorAll('.nodes-grid');
     if (!grids.length) return;
+    const showAllCards = () => {
+      document.querySelectorAll('.node-card').forEach((card) => {
+        card.classList.add('visible');
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+        card.style.transitionDelay = '0ms';
+      });
+    };
+
+    // Mobile browsers sometimes skip/interfere with IO + containment pipelines.
+    if (window.matchMedia('(max-width: 1024px)').matches || reduceMotion()) {
+      showAllCards();
+      return;
+    }
+
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
@@ -393,6 +418,9 @@
       });
     }, { threshold: 0.15 });
     grids.forEach((g) => io.observe(g));
+
+    // Safety fallback: if observer didn't fire for some groups, force reveal.
+    setTimeout(() => showAllCards(), 1800);
   }
 
   function createTeamNavigation() {
@@ -413,6 +441,7 @@
     navList.className = 'nav-list';
 
     const isMobile = window.matchMedia('(max-width: 1200px)').matches;
+    const isCompactMobile = window.matchMedia('(max-width: 900px)').matches;
     const seenLabels = new Set();
     let drawer = null;
     let drawerList = null;
@@ -449,6 +478,19 @@
     }
 
     if (isMobile) {
+      if (isCompactMobile) {
+        appendGroupTitle('SCENES');
+        sceneTargets.forEach((target, i) => {
+          const sceneItem = makeItem(target, false, i, 'nav-item--scene');
+          if (sceneItem) navList.appendChild(sceneItem);
+        });
+
+        appendGroupTitle('TEAMS');
+        teamTargets.forEach((target, i) => {
+          const teamItem = makeItem(target, true, i, 'nav-item--team');
+          if (teamItem) navList.appendChild(teamItem);
+        });
+      } else {
       sceneTargets.forEach((target, i) => {
         const sceneItem = makeItem(target, false, i, 'nav-item--scene');
         if (sceneItem) navList.appendChild(sceneItem);
@@ -492,6 +534,7 @@
         if (e.key === 'Escape') closeDrawer();
       });
       document.body.appendChild(drawer);
+      }
     } else {
       appendGroupTitle('SCENES');
       sceneTargets.forEach((target, i) => {
