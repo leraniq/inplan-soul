@@ -442,6 +442,8 @@
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp .6s ease forwards;
+            --mx: 50%;
+            --my: 50%;
         }
 
         .energy-node:not(:hover){
@@ -459,6 +461,28 @@
             transform: translateY(-8px) scale(1.02);
             border-color: rgba(0,246,255,0.55);
             box-shadow: 0 18px 50px rgba(0,0,0,0.5), 0 0 30px rgba(0,246,255,0.24);
+        }
+
+        .energy-node::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0;
+            background:
+                radial-gradient(
+                    140px circle at var(--mx) var(--my),
+                    rgba(0, 246, 255, 0.22),
+                    rgba(131, 56, 236, 0.16) 36%,
+                    transparent 72%
+                );
+            transition: opacity 220ms cubic-bezier(.16,1,.3,1);
+        }
+
+        .energy-node:hover::before {
+            opacity: 1;
         }
 
         .energy-node.is-pulsing {
@@ -561,6 +585,7 @@
         .nodes-section { padding: 100px 20px; }
         .vip-nodes { margin-bottom: 100px; }
 
+        /* === NODE CARD (FIXED) === */
         .node-card {
             background: linear-gradient(180deg, var(--glass-bg-1), var(--glass-bg-2));
             backdrop-filter: blur(22px) saturate(155%);
@@ -569,26 +594,43 @@
             border-radius: 20px;
             padding: 40px;
             margin-bottom: 30px;
-            transition: transform var(--t-med) var(--ease-out), box-shadow var(--t-med) var(--ease-out), border-color var(--t-med) var(--ease-out);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 24px 80px var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.10);
+            
+            --mx: 50%;
+            --my: 50%;
+            transition:
+                transform 220ms cubic-bezier(.16,1,.3,1),
+                border-color 220ms cubic-bezier(.16,1,.3,1),
+                background 280ms cubic-bezier(.16,1,.3,1);
+            
+            box-shadow: 0 20px 56px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.10);
             opacity: 0;
             transform: translateY(30px);
-            position: relative;
+            z-index: 1;
+            will-change: transform;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
+        /* Luxury glow layer */
         .node-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.6s ease;
+            inset: 0;
+            border-radius: inherit;
+            background:
+                radial-gradient(
+                    420px circle at var(--mx) var(--my),
+                    rgba(0, 246, 255, 0.18),
+                    rgba(131, 56, 236, 0.12) 22%,
+                    transparent 58%
+                );
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 240ms cubic-bezier(.16,1,.3,1);
+            z-index: 2;
         }
 
         .node-card.visible {
@@ -596,58 +638,84 @@
             transform: translateY(0);
         }
 
-        .node-card.visible::before {
-            transform: scaleX(1);
-        }
-
+        /* HOVER STATE (no jumpy scale; tilt comes from JS transform) */
         .node-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 25px 70px rgba(0, 246, 255, 0.25);
-            border-color: var(--neon-cyan);
+            transform: none;
+            border-color: rgba(0, 246, 255, 0.4);
+            box-shadow: 0 22px 58px rgba(0,0,0,0.52), inset 0 1px 0 rgba(255,255,255,0.12);
         }
 
         
-        /* ===== SMART GLASS CURSOR HIGHLIGHTS ===== */
+        /* Luxury sweep layer */
         .node-card::after {
             content: '';
             position: absolute;
             inset: 0;
-            border-radius: 24px;
-            background: radial-gradient(
-                600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                rgba(255,255,255,0.12),
-                transparent 40%
+            border-radius: inherit;
+            background: linear-gradient(
+                115deg,
+                transparent 12%,
+                rgba(255,255,255,0.0) 36%,
+                rgba(255,255,255,0.26) 48%,
+                rgba(255,255,255,0.0) 60%,
+                transparent 86%
             );
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transform: translateX(-130%);
+            transition:
+                transform 520ms cubic-bezier(.16,1,.3,1),
+                opacity 180ms cubic-bezier(.16,1,.3,1);
             pointer-events: none;
-            mix-blend-mode: overlay;
+            z-index: 3;
+        }
+
+        .node-card:hover::before {
+            opacity: 1;
         }
 
         .node-card:hover::after {
-            opacity: 1;
+            opacity: 0.85;
+            transform: translateX(130%);
+        }
+
+        /* Контент внутри - СЛОЙ 2 (чтобы был над фоном, но под эффектами если надо) */
+        .node-card > * {
+            position: relative;
+            z-index: 2;
+            transform: translateZ(0);
+            backface-visibility: hidden;
         }
 
         .energy-node::after {
             content: '';
             position: absolute;
             inset: 0;
-            border-radius: 22px;
-            background: radial-gradient(
-                400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                rgba(255,255,255,0.15),
-                transparent 50%
-            );
+            border-radius: inherit;
+            padding: 1px;
+            background:
+                linear-gradient(
+                    120deg,
+                    transparent 18%,
+                    rgba(255,255,255,0.58) 48%,
+                    transparent 78%
+                );
+            -webkit-mask:
+                linear-gradient(#000 0 0) content-box,
+                linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
             opacity: 0;
-            transition: opacity 140ms var(--ease-out);
-            transition-duration: 120ms;
+            transform: translateX(-125%);
+            transition:
+                opacity 180ms cubic-bezier(.16,1,.3,1),
+                transform 480ms cubic-bezier(.16,1,.3,1);
             pointer-events: none;
+            z-index: 3;
         }
 
-        .energy-node:not(:hover)::after { transition-duration: 70ms; }
-
         .energy-node:hover::after {
-            opacity: 1;
+            opacity: 0.7;
+            transform: translateX(125%);
         }
 
 
@@ -766,8 +834,13 @@
         }
 
         .node-card:hover .badge {
-            transform: scale(1.05);
             box-shadow: 0 4px 15px rgba(255, 0, 110, 0.4);
+        }
+
+        .badge {
+            backface-visibility: hidden;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: geometricPrecision;
         }
 
         .node-role {
@@ -841,7 +914,6 @@
 
         .signal-frequency:hover {
             border-left-color: var(--neon-pink);
-            transform: translateX(5px);
         }
 
         .frequency-header {
@@ -1723,9 +1795,22 @@
 
 
         @media (prefers-reduced-motion: reduce) {
-            * {
-                animation: none !important;
-                transition: none !important;
+            .node-card,
+            .node-card::before,
+            .node-card::after,
+            .signal-frequency {
+                transition-duration: 0.01ms !important;
+            }
+
+            .node-card,
+            .node-card:hover {
+                transform: none !important;
+            }
+
+            .node-card::before,
+            .node-card::after {
+                opacity: 0 !important;
+                transform: none !important;
             }
 
             body::before {
@@ -1883,6 +1968,392 @@
         body.modal-open {
             overflow: hidden;
         }
+
+        /* ========================================
+           CINEMATIC + UX + MOTION + PERF OVERRIDES
+        ======================================== */
+        :root {
+            --dark-card: rgba(20, 20, 30, 0.4);
+            --glass-bg-1: rgba(255,255,255,0.08);
+            --glass-bg-2: rgba(255,255,255,0.02);
+            --glass-stroke: rgba(255,255,255,0.10);
+            --glass-shadow: rgba(0,0,0,0.7);
+        }
+
+        h1, h2, h3, .section-title, .team-name { letter-spacing: 0.04em; }
+        .system-status, .team-boot-header, .badge, .node-role, .frequency-header { letter-spacing: 0.14em; }
+
+        body::before {
+            background:
+                radial-gradient(1200px 900px at 12% 18%, rgba(0, 246, 255, 0.18), transparent 62%),
+                radial-gradient(1100px 860px at 84% 14%, rgba(176, 123, 255, 0.2), transparent 64%),
+                radial-gradient(980px 760px at 78% 84%, rgba(255, 0, 110, 0.16), transparent 62%),
+                radial-gradient(900px 720px at 22% 82%, rgba(124, 255, 203, 0.14), transparent 64%),
+                radial-gradient(620px 520px at 54% 46%, rgba(58, 134, 255, 0.12), transparent 74%),
+                var(--dark-bg);
+            animation: meshFloat 32s ease-in-out infinite alternate;
+            will-change: transform;
+            transform: translateZ(0);
+            z-index: -2;
+        }
+
+        @keyframes meshFloat {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            50% { transform: translate3d(20px, -16px, 0) scale(1.04); }
+            100% { transform: translate3d(-24px, 18px, 0) scale(1.07); }
+        }
+
+        body::after {
+            background:
+                radial-gradient(circle at 50% 50%, transparent 38%, rgba(0,0,0,0.5) 74%, rgba(0,0,0,0.86) 100%),
+                repeating-linear-gradient(to bottom, rgba(232,241,255,0.045) 0, rgba(232,241,255,0.045) 1px, transparent 1px, transparent 3px);
+            opacity: 1;
+            z-index: -1;
+        }
+
+        .node-card {
+            background: rgba(20, 20, 30, 0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255,255,255,0.28);
+            box-shadow: 0 28px 72px rgba(0,0,0,0.58), inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -20px 48px rgba(0,0,0,0.24), inset 0 0 34px rgba(78,243,255,0.07);
+        }
+
+        .frequency-content {
+            color: rgba(244, 248, 255, 0.94);
+            background: linear-gradient(180deg, rgba(10,12,18,0.44), rgba(8,10,15,0.68));
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 14px 16px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            text-wrap: pretty;
+        }
+
+        .frequency-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .signal-icon-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            background: linear-gradient(145deg, rgba(78,243,255,0.2), rgba(176,123,255,0.16));
+            border: 1px solid rgba(255,255,255,0.14);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 8px 20px rgba(0,0,0,0.35);
+            font-size: 0.92rem;
+            line-height: 1;
+        }
+        .signal-frequency-label { font-family: var(--font-mono); font-size: 0.72rem; color: rgba(226, 244, 255, 0.88); letter-spacing: 0.18em; }
+
+        .team-group .team-header { cursor: pointer; user-select: none; }
+        .team-group .nodes-grid {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: max-height 420ms var(--ease-out), opacity 260ms var(--ease-out), transform 260ms var(--ease-out);
+        }
+        .team-group.is-open .nodes-grid { max-height: 20000px; opacity: 1; transform: translateY(0); }
+        .team-group.is-open .team-divider { width: 180px; }
+
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            z-index: 2001;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .scroll-progress__bar {
+            width: 100%;
+            height: 100%;
+            transform-origin: left center;
+            transform: scaleX(0);
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple), var(--neon-pink));
+            box-shadow: 0 0 14px rgba(78,243,255,0.4);
+        }
+
+        .hero h1 { position: relative; display: inline-block; }
+        .hero h1::before, .hero h1::after {
+            content: attr(data-glitch);
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .hero h1:hover::before {
+            opacity: 0.68;
+            color: rgba(0,246,255,0.9);
+            transform: translate3d(-2px, 0, 0);
+            animation: glitchShiftA 260ms steps(2, end) infinite;
+        }
+        .hero h1:hover::after {
+            opacity: 0.66;
+            color: rgba(255,0,110,0.9);
+            transform: translate3d(2px, 0, 0);
+            animation: glitchShiftB 240ms steps(2, end) infinite;
+        }
+        @keyframes glitchShiftA {
+            0% { clip-path: inset(0 0 70% 0); }
+            50% { clip-path: inset(25% 0 22% 0); }
+            100% { clip-path: inset(58% 0 0 0); }
+        }
+        @keyframes glitchShiftB {
+            0% { clip-path: inset(68% 0 0 0); }
+            50% { clip-path: inset(8% 0 56% 0); }
+            100% { clip-path: inset(0 0 72% 0); }
+        }
+
+        .photos-constellation:hover .energy-node { transform: translateY(-2px) scale(0.98); }
+        .energy-node.dock-far { transform: translateY(-4px) scale(1.04) !important; }
+        .energy-node.dock-near { transform: translateY(-8px) scale(1.1) !important; }
+        .energy-node.dock-focus {
+            transform: translateY(-14px) scale(1.2) !important;
+            z-index: 3;
+            box-shadow: 0 20px 64px rgba(0,0,0,0.56), 0 0 36px rgba(0,246,255,0.32);
+        }
+
+        .team-fab {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 14px;
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 999px;
+            background: linear-gradient(145deg, rgba(20,20,35,0.84), rgba(20,20,35,0.58));
+            color: rgba(232,241,255,0.95);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.48), inset 0 1px 0 rgba(255,255,255,0.2);
+            cursor: pointer;
+        }
+        .team-fab__label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; }
+
+        .team-mobile-drawer {
+            position: fixed;
+            inset: 0;
+            z-index: 1999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 220ms var(--ease-out);
+        }
+        .team-mobile-drawer.is-open { opacity: 1; pointer-events: auto; }
+        .team-mobile-drawer__backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(6, 8, 12, 0.62);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+        .team-mobile-drawer__panel {
+            position: absolute;
+            inset: 0;
+            padding: 24px 18px 36px;
+            overflow: auto;
+            background: linear-gradient(180deg, rgba(10,12,18,0.7), rgba(10,12,18,0.84));
+        }
+        .team-mobile-drawer__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .team-mobile-drawer__title { font-family: var(--font-mono); letter-spacing: 0.24em; text-transform: uppercase; color: var(--neon-cyan); font-size: 0.74rem; }
+        .team-mobile-drawer__close {
+            width: 38px;
+            height: 38px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.9);
+            background: rgba(20,20,30,0.45);
+        }
+        .team-mobile-drawer__list { display: grid; gap: 10px; padding-bottom: 60px; }
+        .team-mobile-drawer .nav-item {
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(20,20,30,0.45);
+            text-decoration: none;
+            color: rgba(235,242,255,0.92);
+        }
+
+        .nav-item, .team-fab { transition: transform 140ms var(--ease-out); }
+
+        .nav-toggle:focus-visible,
+        .nav-item:focus-visible,
+        .team-fab:focus-visible,
+        .teams-drawer__close:focus-visible {
+            outline: 2px solid var(--neon-cyan);
+            outline-offset: 2px;
+        }
+
+        .node-card:hover,
+        .node-card.is-tilting,
+        .energy-node:hover,
+        .energy-node.is-pulsing,
+        .nav-item:hover,
+        .team-fab:hover { will-change: transform, opacity; }
+
+        @supports (content-visibility: auto) {
+            .hero,
+            .energy-grid,
+            .nodes-section,
+            .team-group {
+                content-visibility: auto;
+                contain: layout style paint;
+            }
+            .hero { contain-intrinsic-size: 960px; }
+            .energy-grid { contain-intrinsic-size: 1500px; }
+            .nodes-section { contain-intrinsic-size: 1px 1000px; }
+            .team-group { contain-intrinsic-size: 1px 1000px; }
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .node-card {
+                will-change: transform;
+            }
+        }
+
+        @media (hover: none), (prefers-reduced-motion: reduce) {
+            .node-card {
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                background: rgba(20, 20, 35, 0.95) !important;
+            }
+
+            .node-card::before,
+            .node-card::after {
+                opacity: 0 !important;
+                transform: none !important;
+            }
+
+            .node-card:hover {
+                transform: none !important;
+            }
+
+            .energy-node::before,
+            .energy-node::after {
+                opacity: 0 !important;
+                transform: none !important;
+            }
+
+            .energy-node:hover {
+                border-color: rgba(0,246,255,0.45);
+                outline: 1px solid rgba(0,246,255,0.24);
+                outline-offset: -1px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .team-fab { display: inline-flex; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            body::before,
+            .hero h1::before,
+            .hero h1::after,
+            .scroll-progress__bar {
+                animation: none !important;
+            }
+
+            .team-group .nodes-grid {
+                transition-duration: 120ms !important;
+            }
+
+            .node-card,
+            .energy-node {
+                transform: none !important;
+            }
+        }
+
+        /* --- FIX 1: CORE REACTOR (Убираем черный фон, добавляем прозрачность) --- */
+        .core-reactor {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            position: relative;
+            /* Убираем жесткий черный фон, делаем стекло */
+            background: radial-gradient(circle at center, rgba(0, 246, 255, 0.1), transparent 70%);
+            box-shadow:
+                0 0 40px rgba(0, 246, 255, 0.15),
+                inset 0 0 20px rgba(0, 246, 255, 0.1);
+            /* Добавляем постоянную пульсацию, чтобы было понятно, что он живой */
+            animation: reactorBreathing 4s ease-in-out infinite;
+            margin: 0 auto;
+            z-index: 10;
+        }
+
+        @keyframes reactorBreathing {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(0, 246, 255, 0.15); }
+            50% { transform: scale(1.05); box-shadow: 0 0 60px rgba(0, 246, 255, 0.3); }
+        }
+
+        /* Канвас внутри реактора теперь не должен иметь фона, он будет прозрачным */
+        #reactorParticles {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            mix-blend-mode: screen; /* Важно для свечения */
+            width: 300px; /* Делаем область больше самого реактора для вылета частиц */
+            height: 300px;
+        }
+
+        /* Подпись под реактором, чтобы люди поняли */
+        .reactor-label {
+            margin-top: 15px;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            color: rgba(0, 246, 255, 0.6);
+            text-transform: uppercase;
+            animation: blinkText 3s infinite;
+        }
+
+        @keyframes blinkText {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        /* --- FIX 2: ВЫРАВНИВАНИЕ ОТСТУПОВ (SPACING) --- */
+
+        /* Стандартизируем отступы заголовков */
+        .section-title {
+            margin-bottom: 20px; /* Одинаково везде */
+        }
+
+        /* Таблетка (HUD) в секции энергии */
+        .energy-hud {
+            margin: 0 auto 20px; /* Отступ снизу */
+        }
+
+        /* Подзаголовок (Energy Grid // ...) */
+        .section-subtitle {
+            margin-bottom: 60px !important; /* Фиксированный большой отступ до контента */
+            margin-top: 0;
+            color: var(--text-secondary);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+
+        /* Специальный фикс для секции команд, чтобы визуально выровнять высоту */
+        .nodes-section .section-subtitle {
+            /* Добавляем паддинг сверху, чтобы компенсировать отсутствие HUD-таблетки как в секции выше */
+            padding-top: 10px;
+            margin-bottom: 70px !important;
+        }
+
+        /* Скрываем линию-разделитель в бридже, если она мешает */
+        .energy-bridge {
+            margin-bottom: 30px;
+        }
+
     </style>
 </head>
 <body>
@@ -2175,1439 +2646,12 @@
             
             
             <!-- LEADERSHIP TEAM -->
-            <div class="team-group" id="leadership">
-                <div class="team-boot-header">TEAM BOOT // LEADERSHIP</div>
-                <div class="team-header">
-                    <div class="team-name">Leadership</div>
-                    <div class="team-divider"></div>
-                </div>
-
-                <div class="nodes-grid">
-
-                    <div class="node-card legendary">
-                        <div class="node-header">
-                            <div class="node-name">Нестеров Степа</div>
-                        </div>
-                        <div class="badge">GRAVITATIONAL CENTER</div>
-                        <div class="node-role">Managing director</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: CREATION</div>
-                                <div class="frequency-content">
-                                    Поздравляю тебя! Мало собрать сильных профессионалов, важно заразить их общей идеей - и у тебя это получается мастерски. Спасибо за масштаб твоих целей и за то пространство для роста, которое ты открываешь для каждого из нас. Желаю, чтобы команда всегда была твоим надежным ресурсом, а любые, даже самые дерзкие планы, становились реальностью.
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: EXPANSION</div>
-                                <div class="frequency-content">
-                                    С 23 февраля тебя! Круто работать с лидером, который верит в свою команду и в свой продукт. Спасибо за атмосферу и за то, что с тобой всегда чувствуешь себя частью чего-то большого и важного. Желаю, чтобы батарейка никогда не садилась!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card legendary">
-                        <div class="node-header">
-                            <div class="node-name">Мозжеров Сережа</div>
-                        </div>
-                        <div class="badge">CENTRAL REACTOR</div>
-                        <div class="node-role">Product director</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: POWER</div>
-                                <div class="frequency-content">
-                                    С праздником тебя! У тебя есть удивительный дар - одной своей энергией успокаивать любой шторм и вселять уверенность, что всё будет хорошо. Восхищаюсь твоей силой, характером и тем, как ты держишь удар. Спасибо за то редкое чувство надежности, которое ты даешь команде. Рядом с тобой хочется не просто работать, а совершать невозможное. Пусть рядом будут только те, с кем можно свернуть горы! Ты - исключительный. Ты - сердце нашего продукта!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: VISION</div>
-                                <div class="frequency-content">
-                                    Поздравляю тебя! Восхищаюсь твоим умением видеть главное и отсекать шум. Спасибо за мудрость и адекватность во всем. Пусть релизы катятся гладко, а баги обходят стороной. Ты топ!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card legendary">
-                        <div class="node-header">
-                            <div class="node-name">Уланов Сережа</div>
-                        </div>
-                        <div class="badge">SHIELD PROTOCOL</div>
-                        <div class="node-role">Project manager</div>
-                        <div class="signal-frequency">
-                            <div class="frequency-header">● Signal Frequency: DIPLOMACY</div>
-                            <div class="frequency-content">
-                                Главное чтобы ОНИ разбирались и ОНИ все починили. Ты только демо не переноси) с праздником, настоящий мужчина!
-                            </div>
-                        </div>
-                    <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: ZEN</div>
-                                <div class="frequency-content">
-                                    Поздравляю тебя! Твоя способность найти ключ к любому, даже самому требовательному заказчику - это настоящая магия уровня ""Бог"". Спасибо, что берешь этот удар на себя и виртуозно превращаешь напряженные переговоры в успешные кейсы. Ты не просто руководитель, ты создатель атмосферы, где клиент счастлив, а команда спокойна. Это высший пилотаж!
-                                </div>
-                            </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- DP TEAM -->
-            <div class="team-group">
-                <div class="team-boot-header">TEAM BOOT // DP</div>
-                <div class="team-header">
-                    <div class="team-name">DP</div>
-                    <div class="team-divider"></div>
-                </div>
-
-                <div class="nodes-grid">
-
-                    <div class="node-card legendary">
-                        <div class="node-header">
-                            <div class="node-name">Самойлов Дима <span class="star" aria-hidden="true">⭐</span></div>
-                        </div>
-                        <div class="badge">MODULE OWNER</div>
-                        <div class="node-role">Product owner</div>
-                        
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: WARMTH</div>
-                                <div class="frequency-content">
-                                    С праздником! Спасибо, что объясняешь нам прописные истины про целочисленные ключи с терпением мудрого отца. Ты настоящий лидер, за которым хочется идти - даже если путь лежит через очередной апдейт схемы данных. Верим в твое бизнес-видение и идем за тобой, пусть споря и ворча по дороге. С 23 Февраля, товарищ Module Owner!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: RESPECT</div>
-                                <div class="frequency-content">
-                                    Всегда буду преклоняться перед поражающими воображение объемами твоих знаний, количеством историй и анекдотов) Здоровья попугаю и хорошего сна собаке) Пусть всегда находится время на квадрик)
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Чибисов Андрей</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Stream lead</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: COURAGE</div>
-                                <div class="frequency-content">
-                                    С праздником! От всей души желаем, чтобы ""хотелки"" Abie иссякли быстрее, чем твое терпение, и чтобы пятая версия demand propagation стала не просто очередной, а действительно последней. Спасибо, что держишь удар!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Бабин Даня</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Business analyst</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: WISDOM</div>
-                                <div class="frequency-content">
-                                    Спасибо тебе за твою ответсвенность, с тобой ничего не страшно (и ходить на юаты тоже).  С праздником!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: HARMONY</div>
-                                <div class="frequency-content">
-                                    Пусть зеленый цвет присутствует как можно чаще в окошке Airflow, а из отмен в жизни будет только отмена изменений в лог схемах!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: INNOVATION</div>
-                                <div class="frequency-content">
-                                    Уважаемая однодневка, спасибо тебе, что пришел вместе со мной и всегда поддерживаешь! Оставайся таким же позитивным и открытым! Побольше тебе сил и ресурсов (особенно с DP), ты крутейший специалист, только вперед!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Барсуков Даня</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Business analyst</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: STRENGTH</div>
-                                <div class="frequency-content">
-                                    С праздником! Легких задач и быстрых решений.
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Бурдин Ваня</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Business analyst</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: CLARITY</div>
-                                <div class="frequency-content">
-                                    Желаю, чтобы ворк-лайф баланс был настроен идеально
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: BALANCE</div>
-                                <div class="frequency-content">
-                                    Пусть модель данных моделируется, конфиги конфигурируются, интеграция интегрируется, а ты получай удовольствие от жизни!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Захаров Дима</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Business analyst</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: FOCUS</div>
-                                <div class="frequency-content">
-                                    С 23 февраля! Мужества тебе, терпения и мощных системных ресурсов!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Остапенко Егор</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">ML-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: ENERGY</div>
-                                <div class="frequency-content">
-                                    С 23 Февраля! Хочется пожелать тебе внедрения особого патча в жизнь, который установит прямую корреляцию между твоей скоростью решения проблем и накоплением отпускных дней. Желаем, чтобы этот апдейт прошел успешно, а багов в твоем отдыхе не было!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: RESILIENCE</div>
-                                <div class="frequency-content">
-                                    Будем ругаться еще год?:)
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Пилитский Саша</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">ML-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: EMPATHY</div>
-                                <div class="frequency-content">
-                                    Устав и награды по подразделению MLE: Рядовой Дорогой Саша! Поздравляю тебя с 23 февраля! Уважение, гордость, и любовь тебе. За стойкость и мужество при срочном деплое на Аби стенды - присвоить звание ""Заслуженный артиллерист"". Желаю тебе молниеносной реакции, холодной головы и горячего сердца. Пусть твой код всегда компилируется с первого раза, а в жизни будет больше тихих и спокойных дней!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Яндовский Паша</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">ML-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: INTEGRITY</div>
-                                <div class="frequency-content">
-                                    Устав и награды по подразделению MLE: Рядовой Дорогой Паша! Поздравляю тебя с 23 февраля! Уважение, гордость, и любовь тебе. За отвагу в освоении новых архитектур и героизм при защите кода от багов - присвоить звание ""Лучший разведчик данных"". Желаю не терять нюх на инсайты и пусть твоя разведка данных приносит только ценные трофеи, а вражеские баги капитулируют без боя!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Воробьев Денис</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">ML-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: EXCELLENCE</div>
-                                <div class="frequency-content">
-                                    Такой ты классный, вроде всего ничего с нами, а уже как родной. Будь счастливым и чтобы мечты все сбывались :)
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: DEDICATION</div>
-                                <div class="frequency-content">
-                                    Я бесконечно рада, что мы таки украли тебя к себе, хоть и пришлось ради этого воровать тебя вместе с клиентом
-                                </div>
-                            </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- PS TEAM -->
-            <div class="team-group">
-                <div class="team-boot-header">TEAM BOOT // PS</div>
-                <div class="team-header">
-                    <div class="team-name">PS</div>
-                    <div class="team-divider"></div>
-                </div>
-
-                <div class="nodes-grid">
-
-                    <div class="node-card legendary name-fit">
-                        <div class="node-header">
-                            <div class="node-name"><span class="full-name">Боклаженко&nbsp;Вова</span><span class="star" aria-hidden="true">⭐</span></div>
-                        </div>
-                        <div class="badge">PS ENERGY</div>
-                        <div class="node-role">Product owner</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: INSPIRATION</div>
-                                <div class="frequency-content">
-                                    Ты самый невероятный, искренний и веселый парень! таким и оставайся)
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: PERSEVERANCE</div>
-                                <div class="frequency-content">
-                                    Я тебя боюсь, но бесконечно уважаю) Рано или поздно все сделаем красиво, обещаю, но не сразу)
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Карасев Илья</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Business analyst</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: CREATIVITY</div>
-                                <div class="frequency-content">
-                                    Спасибо тебе за стойкость и самоотверженность в работе, очень рада работать с тобой в одной команде. Поздравляю с мужчинским днем и желаю преодолевать все задачи на своем пути! с Праздником!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Михайленко Саша</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Back-end dev</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: LEADERSHIP</div>
-                                <div class="frequency-content">
-                                    Ты делаешь нашу команду особенной! Спасибо за мемы, юмор и за то, что понимаешь самые сложные постановки и всегда предлагаешь лучшие решения. Желаю тебе вдохновения, успехов.
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Мусин Дини</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Front-end dev</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: PRECISION</div>
-                                <div class="frequency-content">
-                                    Ты разработчик с самыми красивыми потолками и самыми добрыми вайбами!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Майер Рома</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Data-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: DYNAMISM</div>
-                                <div class="frequency-content">
-                                    Как приятно слушать, как ты рассказываешь о своих задачах - тепло и увлеченно. И ты всегда знаешь, что делаешь. Желаю тебе крепких нервов к дедлайнам, сохранять энтузиазм, и получать от работы максимум радости!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Стребков Андрей</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">SQL dev</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: DISCOVERY</div>
-                                <div class="frequency-content">
-                                    Я поражаюсь твоему умению сделать все красиво, желаю огромного здоровья и вдохновения!
-                                </div>
-                            </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- PS OPT TEAM -->
-            <div class="team-group">
-                <div class="team-boot-header">TEAM BOOT // PS OPT</div>
-                <div class="team-header">
-                    <div class="team-name">PS OPT</div>
-                    <div class="team-divider"></div>
-                </div>
-
-                <div class="nodes-grid">
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Рожков Леша</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Business analyst</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: TRANSFORMATION</div>
-                                <div class="frequency-content">
-                                    Ты нереальный классный парень, с тобой как за каменной стеной. Желаю большой любви и успехов в работе!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Ефименко Саша</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">ML-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: UNITY</div>
-                                <div class="frequency-content">
-                                    Спасибо тебе за твою уверенность и профессионализм, я желаю тебе процветания и успехов) и самой большой любви на свете!
-                                </div>
-                            </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- SNP TEAM -->
-            <div class="team-group">
-                <div class="team-boot-header">TEAM BOOT // SNP</div>
-                <div class="team-header">
-                    <div class="team-name">SNP</div>
-                    <div class="team-divider"></div>
-                </div>
-
-                <div class="nodes-grid">
-
-                    <div class="node-card legendary">
-                        <div class="node-header">
-                            <div class="node-name">Дикинов Игорь <span class="star" aria-hidden="true">⭐</span></div>
-                        </div>
-                        <div class="badge">SNP ARCHITECT</div>
-                        <div class="node-role">Product owner</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: BRILLIANCE</div>
-                                <div class="frequency-content">
-                                    Спасибо тебе за твои знания, поддержку и отзывчивость. Спасибо, что подкармливаешь нас и никогда не бросаешь! Побольше тебе сил, поменьше нервов и ворчливых заказчиков. Скоро придет солнышко и тепло, не грусти, ты - лучший!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: MOMENTUM</div>
-                                <div class="frequency-content">
-                                    С праздником! Мы поздравляем тебя не просто как отличного руководителя и главного архитектора модуля планирования поставок, но и как человека с отменным вкусом, ведь мы все знаем секрет твоего успеха: ты набрал в команду самых красивых девочек! Желаем, чтобы все фантазии из мира планирования поставок реализовывались платформой с легкостью!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: CONFIDENCE</div>
-                                <div class="frequency-content">
-                                    Спасибо за то, что несмотря на твою загрузку к тебя всегда можно прийти и что-нибудь с тобой обсудить и о чем-то пошушукаться) Спасибо за невероятную психологическую поддержку, за твои поддерживающие шутки, ну и, конечно, за твое видение продукта) куда же без этого. Спасибо, что ты у нас есть) Желаю железных нервов, бетонного спокойствия и много-много сил (и поменьше созвонов!!!)Всегда помни, Игорь: ты - Легенда!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: GRATITUDE</div>
-                                <div class="frequency-content">
-                                    Оберегай свой грустный угол. Моё любимое место в московском офисе - напротив тебя)
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Курмачев Юра</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Stream lead</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: ADAPTABILITY</div>
-                                <div class="frequency-content">
-                                    Наша надёжная опора. Спасибо тебе за твою поддержку и участие.Особая благодарность за наши разговоры - они помогают лучше понимать, чего действительно хочется от работы. Это дорогого стоит.С праздником! Желаем тебе крепкого здоровья, сил и отличного настроения
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: INSIGHT</div>
-                                <div class="frequency-content">
-                                    С праздником!Спасибо тебе, что ты отважно сидишь с нами денно и нощно) Что ты всегда готов прийти на помощь и решить любой вопрос) Спасибо за твою готовность поддержать, дать совет, наставить на путь истинный! Ты наш настоящий защитник нашей команды) P.s: Дополнительно спасибо за твой невероятный талант находить методом тыка самые неочевидные баги и прорехи в логике)P.s.p.s: Присоединяюсь к словам Алсу - ЛУЧШИЙ!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Котенев Богдан</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Business analyst</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: CREATION</div>
-                                <div class="frequency-content">
-                                    Ты потрясающий друг и специалист, побольше тебе сил и отдыха, ты со всем справишься! Поменьше играй в падел и знай, что все твои замыслы будут удачными :)
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: EXPANSION</div>
-                                <div class="frequency-content">
-                                    Внесён в Красную книгу SNP как ""Аналитик, который довёл проект до внедрения, не сойдя с ума"". Легенда!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Серов Андрей</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Business analyst</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: POWER</div>
-                                <div class="frequency-content">
-                                    С 23 февраля, бессменный ночной дозорный спецификаций! Тот, кто знает, что бизнес-требования не спят никогда, и мужественно встречает эту армию хотелок лицом к лицу, даже когда за окном темно. Желаем тебе однажды всё-таки выспаться, но без потери боевой готовности. Пусть требования становятся понятнее с первого раза, разработчики читают документацию, а внедрение проходит быстро и без ночных кошмаров.
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: VISION</div>
-                                <div class="frequency-content">
-                                    Ты мой справочник корректировок и большая-большая поддержка. Спасибо тебе за это! Дорогой друг, желаю тебе удерживать баланс везде и со всеми, ты невероятно сильный и со всем справишься! (пошли уже на концерт ATL)
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Галимшин Эльдар</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">System analyst</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: DIPLOMACY</div>
-                                <div class="frequency-content">
-                                    С 23 февраля! Ты как настоящий универсал - одинаково хорошо смотришься в любом модуле In.Plan. Желаем, чтобы и в жизни тебе шло абсолютно всё, а интересные задачи попадались часто, а коллекции Postman никогда!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Голодок Влад</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Front-end dev</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: ZEN</div>
-                                <div class="frequency-content">
-                                    Почему мы такие хорошие? Почему все не могут быть как мы?
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: WARMTH</div>
-                                <div class="frequency-content">
-                                    Поздравляем тебя с праздником! Гордимся тобой за ту отвагу и смелость, с которой ты готов сражаться с багами и разрабатывать кнопки всех видов и функциональности!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Басинский Вадим</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Data-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: RESPECT</div>
-                                <div class="frequency-content">
-                                    С 23 февраля, истинный разведчик данных! Желаем тебе всегда выходить победителем из любой схватки с неопределённостью. Пусть твоё чутьё никогда не подводит, а Spark-артиллерия бьёт без промаха. Рискуй там, где другие отступают, находи решения там, где их не видно, и возвращайся из любой командировки в мир хаоса с ценными трофеями - работающими алгоритмами и стабильным продакшеном. С праздником, боец невидимого дата-фронта!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Хмыров Юра</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">SQL dev</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: COURAGE</div>
-                                <div class="frequency-content">
-                                    Пусть даже самые безумные идеи выполняются молниеносно, а бизнес рукоплещет твоим нестандартным решениям. Оставайся таким же дерзким и гениальным - ты настоящий снайпер своего дела!Настоящий мужчина, который не смотрит в регламент, а смотрит в корень (данных)! С Праздником!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: WISDOM</div>
-                                <div class="frequency-content">
-                                    Ты визионер и художник) не забывай иногда оглядываться на нас ""обывателей"" ;)
-                                </div>
-                            </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- OPT TEAM -->
-            <div class="team-group">
-                <div class="team-boot-header">TEAM BOOT // OPT</div>
-                <div class="team-header">
-                    <div class="team-name">OPT</div>
-                    <div class="team-divider"></div>
-                </div>
-
-                <div class="nodes-grid">
-
-                    <div class="node-card legendary">
-                        <div class="node-header">
-                            <div class="node-name">Репин Андрей <span class="star" aria-hidden="true">⭐</span></div>
-                        </div>
-                        <div class="badge">WORLD'S BEST BOSS</div>
-                        <div class="node-role">Product owner</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: HARMONY</div>
-                                <div class="frequency-content">
-                                    Твоя компетентность вызывает только восторг и восхищение. Как и твой бобёр на заставке) Спасибо тебе за все и за терпение) Будь счастлив)
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: INNOVATION</div>
-                                <div class="frequency-content">
-                                    Спасибо тебе за невероятное спокойствие даже в самых сложных ситуациях, за твое чувство юмора, за умение решить любой самый нерешаемый вопрос, за умение найти выход из самых безвыходных ситуаций)  Спасибо за твое умение выслушать, помочь и поддержать, направить и научить) В общем, как говорится, и правда WORLD'S BEST BOSS - нашей команде очень с тобой повезло, спасибо, что ты у нас есть)
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: STRENGTH</div>
-                                <div class="frequency-content">
-                                    Ты невероятный специалист и человек, которого каждый день разрывают на 500 маленьких Андреев, но при этом ты всегда находишь время подсказать и помочь, спасибо! Побольше тебе сил и внутренних ресурсов, верю в тебя и в наш модуль! Спасибо!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: CLARITY</div>
-                                <div class="frequency-content">
-                                    Спасибо что оптимизируешь нашу жизнь: минимизируешь стресс и максимизируешь хорошее настроение. Спасибо. что ты у нас есть!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Ларюшкин Ваня</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Business analyst</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: BALANCE</div>
-                                <div class="frequency-content">
-                                    Никто никогда не читал мне стихи за исправлением багов) Продолжай быть собой)
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: FOCUS</div>
-                                <div class="frequency-content">
-                                    Спасибо за то, что ты готов ворваться в любую рабочую авантюру ни разу не испугавшись)Спасибо, что сделал из меня ""уверенного пользователя ЭКСЕЛЯ"", научил философски подходить к авралам на работе и никогда не унывать)P.s: ПРИВЕТ ИЗ СПБ!!!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: ENERGY</div>
-                                <div class="frequency-content">
-                                    Ты - человек, обучавший меня в самом-самом начале и научивший меня огромному количеству вещей и фишек, спасибо тебе! Ты невероятно глубокий и многогранный человек, каждый раз поражаюсь твоим интересам и увлечениям, никогда не меняйся! Продолжай заниматься тем, что тебя вдохновляет. Желаю тебе не терять любопытство и любовь к жизни. Никогда не сдавайся, ты со всем справишься!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Попов Леша</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Business analyst</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: RESILIENCE</div>
-                                <div class="frequency-content">
-                                    Обожаю находить тебя на общекорпоративных видосах) Ты - Артист!)
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: EMPATHY</div>
-                                <div class="frequency-content">
-                                    Ты наш главный панк! Желаю продолжать сиять как на работе, так и в жизни! Спасибо за наши посиделки на кухне в офисе и за твои мудрые житейские советы)   P.s.: я обязательно доеду до офиса....
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Земсков Сережа</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">ML-engineer lead</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: INTEGRITY</div>
-                                <div class="frequency-content">
-                                    Не знаю ни одного такого классного парня как ты, рядом с тобой ничего не страшно и я всегда уверена, что все цели будут достигнуты. Оставайся таким как есть и продолжай любить свое дело! Спасибо тебе)
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: EXCELLENCE</div>
-                                <div class="frequency-content">
-                                    Спасибо, что круглосуточно оберегаешь наши стенды от инфизиблов, а нашу команду от фатальных багов и неоптимальных решений) С тобой всегда есть вайб, что наш пивной Готэм (аби-прод) под надежной защитой) Спасибо тебе за то, что ты есть!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Богачев Ваня</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">ML-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: DEDICATION</div>
-                                <div class="frequency-content">
-                                    С днем защитника! Защищай свой код от багов, а начальство - от правды ;) Ты супер-классный, веселый и трудолюбивый)
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: INSPIRATION</div>
-                                <div class="frequency-content">
-                                    Спасибо тебе за самую крутую круглосуточную работу в августе и за самый веселый хакатон) Спасибо, что готов всегда откликнуться, прийти на помощь, заступиться и поддержать) Спасибо за самые милые и быстрые рабочие споры/ссоры и за твое умопомрачительное чувство юмора)P.s: В честь этого праздника на один день признаю.... Красноярск лучше Кемерово...
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Сухарев Саша</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">ML-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: PERSEVERANCE</div>
-                                <div class="frequency-content">
-                                    Ты - шикарно поешь и отжигаешь на корпоратах) не стесняйся)
-                                </div>
-                            </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- MEIO TEAM -->
-            <div class="team-group">
-                <div class="team-boot-header">TEAM BOOT // MEIO</div>
-                <div class="team-header">
-                    <div class="team-name">MEIO</div>
-                    <div class="team-divider"></div>
-                </div>
-
-                <div class="nodes-grid">
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Максимов Леша</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">ML-engineer lead</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: CREATIVITY</div>
-                                <div class="frequency-content">
-                                    Спасибо, за твое стремление все нормализовать, узаконить. За вовлеченность и вдумчивость.
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: LEADERSHIP</div>
-                                <div class="frequency-content">
-                                    Спасибо тебе за твое терпение и умение одним ответом на вопрос помочь выстроить полную картину в голове (честно, ты лучший в развернутых ответах!). Спасибо за твой целостный подход и умиротворенность, пусть тебе всегда светит солнце!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Клемашев Коля</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">ML-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: PRECISION</div>
-                                <div class="frequency-content">
-                                    Твой ум выходит за все возможные рамки, так приятно и классно с тобой работать, не останавливайся) Желаю тебе большого счастья и свершений на пути! обнимаю)
-                                </div>
-                            </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- PL TEAM -->
-            <div class="team-group">
-                <div class="team-boot-header">TEAM BOOT // PL</div>
-                <div class="team-header">
-                    <div class="team-name">PL</div>
-                    <div class="team-divider"></div>
-                </div>
-
-                <div class="nodes-grid">
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Султанов Руслан</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Business analyst</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: DYNAMISM</div>
-                                <div class="frequency-content">
-                                    Ты круто проводишь демо клиентам и все знаешь про платформу, пусть будут только интересные и важные фичи в твоей практике. Спокойствия и счастья!)
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: DISCOVERY</div>
-                                <div class="frequency-content">
-                                    Самый смелый и выдержанный. Когда наша платформенная мама ушла в другую семью не испугался, а просто делал дело. Это круто)
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: TRANSFORMATION</div>
-                                <div class="frequency-content">
-                                    :D :D :D, если бы не твои мотивация, энергия и смелость, кукушка деливери отстегнулась бы в этот сложный период последних месяцев! Но ты был и остаешься каменной стеной для платформы, нашу благодарность тебе просто невозможно выразить словами!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Афанасов Паша</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">System analyst</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: UNITY</div>
-                                <div class="frequency-content">
-                                    Ты делаешь наш продукт лучше, приносишь классные требования и всегда на страже прекрасного!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Кутимский Максим</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">System analyst</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: BRILLIANCE</div>
-                                <div class="frequency-content">
-                                    Почаще создавай свои прекрасные мемы, чтобы нам легче было выносить весь ужас этой реальности) Ну и без твоих спек не было бы столько прекрасного в нашем мире ^^
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: MOMENTUM</div>
-                                <div class="frequency-content">
-                                    Продолжай быть первой помощью системного анализа в бесконечном мире ракурсов! Не переставай шутить и радовать нас своими шутками и мемами! Пусть в релизе попадаются наиболее интересные для тебя задачи, а их бизнес-требования будут прозрачными и непротиворечивыми!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Гарифулин Илья</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Back-end dev</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: CONFIDENCE</div>
-                                <div class="frequency-content">
-                                    Мы очень рады, что ты присоединился к нашему дурдому :D желаю, чтобы ракурсная профдеформация психики прошла легко, продолжай радовать наши сердечки своим позитивом!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Гладков Валя</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Back-end dev</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: GRATITUDE</div>
-                                <div class="frequency-content">
-                                    Ровелитель ракурсов, создатель БДСМ сервиса и просто наше солнышко! Желаем интересных задач, отсутствия дурацких багов и пей витаминки, чтобы не болеть и радовать своих козочек в офисе <3
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Дилоян Акоб</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Back-end dev</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: ADAPTABILITY</div>
-                                <div class="frequency-content">
-                                    Ты пишешь так, что в твоих сторях скучно искать баги)
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: INSIGHT</div>
-                                <div class="frequency-content">
-                                    Ты пишешь так, что в твоих сторях скучно не только искать баги, но и даже спеки писать! Нам крепче спится по ночам, потому что ты хранишь этот мир, герой без плаща! Любим и счастливы работать с тобой вместе ^^
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Музипов Булат</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Back-end dev</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: CREATION</div>
-                                <div class="frequency-content">
-                                    С Божьей помощью собирает джары, что живут в проде вечно, спасибо тебе большое) желаю много любви!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: EXPANSION</div>
-                                <div class="frequency-content">
-                                    Герой дезагры по 3 показателю и множества других сложных сторей! Спасибо тебе, что вместе с нами творишь прекрасное ^^
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Свиридов Леша</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Back-end dev/Front-end dev</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: POWER</div>
-                                <div class="frequency-content">
-                                    Всем продуктом молимся за твое здравие и до сих пор не верим, что заслужили такого крутого разработчика!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: VISION</div>
-                                <div class="frequency-content">
-                                    Рада, что клиент подарил нам тебя. С тобой ничего не страшно)
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Шушков Артур</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Back-end dev</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: DIPLOMACY</div>
-                                <div class="frequency-content">
-                                    Готова хвалить тебя твоему карьерному бесконечно) продолжай давать поводы)
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: ZEN</div>
-                                <div class="frequency-content">
-                                    Пока твой деливери корчится в ужасе от происходящего, ты спокойно и с позитивом спасаешь мир и всю команду!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Шиленко Андрей</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Front-end dev</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: WARMTH</div>
-                                <div class="frequency-content">
-                                    Позитив, оптимизм и терпение в решении сложных задач и разборе запутанных багов - это про тебя! Пусть верстка всегда отображается корректно во всех браузерах жизни и в любые обстоятельства!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: RESPECT</div>
-                                <div class="frequency-content">
-                                    Без твоих упоротых шуточек дейлик не дейлик, продолжай нас радовать!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Третьяк Рома</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Data-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: COURAGE</div>
-                                <div class="frequency-content">
-                                    Ты - человек, который заставил данные летать. Спасибо за то, что укрощаешь хаос больших чисел и превращаешь его в чистую, молниеносную аналитику. Твоя работа с ClickHouse - это не просто инженерия, это искусство высокой производительности. Желаю, чтобы в жизни, как и в твоих кластерах, всё работало в реальном времени, без задержек и сбоев!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Ануфриев Илья</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">QA-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: WISDOM</div>
-                                <div class="frequency-content">
-                                    Пусть регрессы всегда проходят normalno хдхдхд  Благодаря твоей милой тревожности психика деливери хоть как-то держится хдхд
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: HARMONY</div>
-                                <div class="frequency-content">
-                                    Спасибо, что ты есть, легенда ракурсов. Спасибо за готовность всегда помочь и подсказать!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: INNOVATION</div>
-                                <div class="frequency-content">
-                                    Ты лучший художник в пейнте по версии InPlan, гуру ракурсов, гроза переливок и просто комфортик!)
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Блохин Даня</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">QA-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: STRENGTH</div>
-                                <div class="frequency-content">
-                                    Пусть будет меньше ракурсов в тестах, меньше стресса и больше солнца)
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: CLARITY</div>
-                                <div class="frequency-content">
-                                    Позитивное тёплое солнышко, ты бесконечно нас радуешь быстрым погружением и заряжаешь позитивом на дейликах, любим и восхищаемся!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Брыков Максим</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">QA-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: BALANCE</div>
-                                <div class="frequency-content">
-                                    От твоего строго взора дезагра чинится сама! Ментального здоровья тебе, прозрачных требований и пусть на твоем пути не встречаются блокеры!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Виноградов Ваня</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">QA-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: FOCUS</div>
-                                <div class="frequency-content">
-                                    Не знаю, как ты еще не выгорел на переносе объектов и спасибо тебе за это, а также за мотивацию и вовлеченность в борьбе за качество!
-                                </div>
-                            </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- AQA TEAM -->
-            <div class="team-group">
-                <div class="team-boot-header">TEAM BOOT // AQA</div>
-                <div class="team-header">
-                    <div class="team-name">AQA</div>
-                    <div class="team-divider"></div>
-                </div>
-
-                <div class="nodes-grid">
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Бучукури Тамаз</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">AQA-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: ENERGY</div>
-                                <div class="frequency-content">
-                                    Пусть тебя бесконечно спасают своевременно обновленные на нужных стендах локаторы, а автотесты никогда не падают!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: RESILIENCE</div>
-                                <div class="frequency-content">
-                                    Ты - последняя линия обороны! Желаю тебе надежного бронежилета в виде автотестов и острых снарядов для поиска багов. Люби и будь любимым, с праздником!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Машталов Паша</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">AQA-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: EMPATHY</div>
-                                <div class="frequency-content">
-                                    Желаю тебе победить автоматизацию ракурсов и спасти нас своими прекрасными тестами!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: INTEGRITY</div>
-                                <div class="frequency-content">
-                                    Желаю тебе железобетонных тестовых данных и фреймворков, которые понимают тебя с полуслова. Спасибо тебе за тебя) с праздником) Ты невероятный!
-                                </div>
-                            </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- DEVOPS TEAM -->
-            <div class="team-group">
-                <div class="team-boot-header">TEAM BOOT // DEVOPS</div>
-                <div class="team-header">
-                    <div class="team-name">DevOps</div>
-                    <div class="team-divider"></div>
-                </div>
-
-                <div class="nodes-grid">
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Ситников Слава</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">DevOps-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: EXCELLENCE</div>
-                                <div class="frequency-content">
-                                    Удачи тебе, пусть задачи всегда приходят во время, с нужными уточнениями и полными требованиями)
-                                </div>
-                            </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- DEV LEAD TEAM -->
-            <div class="team-group">
-                <div class="team-boot-header">TEAM BOOT // DEV LEAD</div>
-                <div class="team-header">
-                    <div class="team-name">Dev Lead</div>
-                    <div class="team-divider"></div>
-                </div>
-
-                <div class="nodes-grid">
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Назаренко Дима</div>
-                        </div>
-                        <div class="badge">ZEN MASTER</div>
-                        <div class="node-role">ML/DE/SQL lead</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: DEDICATION</div>
-                                <div class="frequency-content">
-                                    С праздником! Спасибо, что создаешь вокруг себя зону абсолютного спокойствия и не даешь нам утонуть в методологическом хаосе и пустых спорах. Желаем, чтобы в твоей жизни всё складывалось так же логично и структурировано, как выстроенный тобой процесс разработки.
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: INSPIRATION</div>
-                                <div class="frequency-content">
-                                    Слов всего мира не хватит чтобы описать насколько я восхищена твоим бескорыстием, отсутствием в тебе тяги к тщеславию, способности просто делать дело, вопреки бушующему морю страстей. Это то, чего лично мне так не хватает. Вырасту - стану как Дима.
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Буторин Миша</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Back-end lead</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: PERSEVERANCE</div>
-                                <div class="frequency-content">
-                                    Нельзя не отметить твой рост за это время. Всегда хихикаю с твоей первоначальной эмоциональной реакции, которая всегда заканчивается ""ладно, хрен с ними, давай сделаем
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Кресников Леша</div>
-                        </div>
-                        <div class="badge">THE BATYA</div>
-                        <div class="node-role">Front-end lead</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: CREATIVITY</div>
-                                <div class="frequency-content">
-                                    Спасибо, что ведешь нас верным курсом в мире фронтенда! Ты крутой специалист и любимый всеми человечек! Пусть код всегда компилируется с первого раза, дедлайны не горят, техдолг не накапливается, а вдохновение будет бесконечным!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: LEADERSHIP</div>
-                                <div class="frequency-content">
-                                    Рада называть тебя гордым ""Леша"", а не пренебрежительным ""Алеша"") Люблю тебя бесконечно) Жахнем текилы?
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: PRECISION</div>
-                                <div class="frequency-content">
-                                    THE BATYA и основа нашего ментального здоровья! Мечтаем бахнуть с тобой текилы, Боженька!)
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Цветков Леша</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">DevOps lead</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: DYNAMISM</div>
-                                <div class="frequency-content">
-                                    Нет предела твоему стремлению сделать все хорошо, твоя вера в общее дело, заражает и ведет за собой. Знаю, как бывает непросто, но всегда поражаюсь работоспособности, самоотверженности и вере в себя. Пусть твой маленький питонист подрастает, а все ""спорные"" дела решаются в твою пользу. Ты - лучший
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Исаичкин Вася</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Architect</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: DISCOVERY</div>
-                                <div class="frequency-content">
-                                    Пусть тебе покоряются все криптобиржи мира, а в Сочи никогда не идет дождь)
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Арбатский Дима</div>
-                        </div>
-                        <div class="badge">BRIGHTEST SOUL</div>
-                        <div class="node-role">PMO</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: TRANSFORMATION</div>
-                                <div class="frequency-content">
-                                    Ты самый светлый человек, которого я встречала, я желаю тебе свернуть все горы и препятствия и, уверена, ты будешь самым крутым профи. Обнимаю!
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: UNITY</div>
-                                <div class="frequency-content">
-                                    Ты - моя надежда и опора, мой луч света, тот, кому я могу доверить и фиксы на прод выдавать и полномочия на БД. Ты - мой криптонит, тебе позволено все) ты только держись
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Дусенко Кирилл</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">UI/UX</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: BRILLIANCE</div>
-                                <div class="frequency-content">
-                                    Творец прекрасного, продолжай делать этот мир лучше, пусть результат тебя радует, а фронтята правильно верстают твои офигенные макеты!)
-                                </div>
-                            </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- SUPPORT TEAM -->
-            <div class="team-group">
-                <div class="team-boot-header">TEAM BOOT // SUPPORT</div>
-                <div class="team-header">
-                    <div class="team-name">Support</div>
-                    <div class="team-divider"></div>
-                </div>
-
-                <div class="nodes-grid">
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Ахмедов Антон</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Support lead</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: MOMENTUM</div>
-                                <div class="frequency-content">
-                                    Спасибо, что влился в нашу команду и стал незаменимым человечком, желаю тебе огромного здоровья и счастья, оставайся таким же классным парнем) Пусть твоё терпение будет безлимитным, как корпоративный интернет, а нервные клетки восстанавливаются быстрее, чем падает сервер.
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Иванов Тема</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Support-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: CONFIDENCE</div>
-                                <div class="frequency-content">
-                                    Ты тихая гавань в потоке глобальной работы, ты супер-веселый и классный парень у которого впереди еще столько свершений. Живи, люби, будь счастливым. поздравляю! Пусть твой внутренний огонь никогда не гаснет, даже после 50-го однотипного вопроса за смену.
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Осипов Левон</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Support-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: GRATITUDE</div>
-                                <div class="frequency-content">
-                                    Рано или поздно ты украдешь мою роль на проектах. Я точно знаю) буду рада ею поделиться) Будь самым счастливым! С праздником!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Яковлев Антон</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Support-engineer</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: ADAPTABILITY</div>
-                                <div class="frequency-content">
-                                    Поражаюсь твоей невероятной силе и стойкости, на тебя всегда можно положиться и я очень рада работать с таким человечком. Будь самым счастливым мужчиной, с праздником!
-                                </div>
-                            </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- SALES TEAM -->
-            <div class="team-group">
-                <div class="team-boot-header">TEAM BOOT // SALES</div>
-                <div class="team-header">
-                    <div class="team-name">Sales</div>
-                    <div class="team-divider"></div>
-                </div>
-
-                <div class="nodes-grid">
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Гайдук Семен</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Sales team</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: INSIGHT</div>
-                                <div class="frequency-content">
-                                    Наше южное братство должно держаться вместе. тогда - нам все по плечу) Спасибо за разговоры, за поддержку, за чай) Ждите в гости, пойдем пить пиво)
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: CREATION</div>
-                                <div class="frequency-content">
-                                    Наша опора и поддержка, спасибо тебе за участие, утренние летучки на поболтать и неоценимую душевность каждый день. Мы со всем справимся, скоро весна и солнышко!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Денисов Денис</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Sales team</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: EXPANSION</div>
-                                <div class="frequency-content">
-                                    Ты - удивительный профессионал своего дела, восхищаюсь твоим умением найти подход к каждому и мягко проявлять силу
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: POWER</div>
-                                <div class="frequency-content">
-                                    Твои шутки и забавные истории озаряют каждую нашу встречу, спасибо за доверие нам и терпение, за поддержку и внимательность. Побольше тебе сил и ресурсов :)
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Крючатов Саша</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Sales team</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: VISION</div>
-                                <div class="frequency-content">
-                                    Желаю тебе полюбить In.Plan всей душой, как его любим мы и легко влиться в коллектив! Пусть работа будет интересной и увлекающей!
-                                </div>
-                            </div>
-                    </div>
-
-                    <div class="node-card">
-                        <div class="node-header">
-                            <div class="node-name">Никишонков Макар</div>
-                        </div>
-                        <div class="badge">SIGNAL NODE</div>
-                        <div class="node-role">Sales team</div>
-                        <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: DIPLOMACY</div>
-                                <div class="frequency-content">
-                                    Прекрасный, я всегда радуюсь когда слышу твой спокойный, уверенный голос на оперкомах. Такой прям важный дядька стал) Покурим?
-                                </div>
-                            </div>
-                            <div class="signal-frequency">
-                                <div class="frequency-header">● Signal Frequency: ZEN</div>
-                                <div class="frequency-content">
-                                    Спасибо тебе за присутствие, помощь, поддержку и силу. Не знаю что я бы без тебя делала. Не нервничаем! И верим в то, что этот год будет за красными! (и за нами)
-                                </div>
-                            </div>
-                    </div>
-
-                </div>
-            </div>
-
-    <!-- Кнопка наверх -->
-    <a href="#" class="back-to-top" id="backToTop">↑</a>
+                        <div id="teamsRoot" class="teams-root"></div>
+        </div>
+    </section>
+
+    <!-- ?????? ?????? -->
+<a href="#" class="back-to-top" id="backToTop">↑</a>
 
     
 <div id="girlModal" class="girl-modal" aria-hidden="true">
@@ -3625,910 +2669,634 @@
 </div>
 <div class="nav-overlay" data-close-nav="true"></div>
 
-<script>
-        // ========================================
-        // NEURAL ENERGY LINK SYSTEM
-        // ========================================
-        class NeuralEnergySystem {
-            constructor() {
-                this.canvas = document.getElementById('neuralLayer');
-                if (!this.canvas) return;
+<script>    // ========================================
+    // 1. NEURAL ENERGY SYSTEM + GAMIFICATION BURSTS
+    // ========================================
+    class NeuralEnergySystem {
+        constructor() {
+            this.canvas = document.getElementById('neuralLayer');
+            if (!this.canvas) return;
+            this.ctx = this.canvas.getContext('2d');
+            this.nodes = [];
+            this.sparks = [];
+            this.activeNode = null;
+            this.mouseX = -1000;
+            this.mouseY = -1000;
+            this.dpr = window.devicePixelRatio || 1;
+            this.connectionRadius = 200;
+            this.maxSparks = 220;
+            this.frameCount = 0;
+            this.mobileQuality = window.matchMedia('(max-width: 900px), (hover: none)').matches;
+            this.reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            this.trailInterval = this.mobileQuality ? 16 : 10;
+            this.rafId = null;
+            this.isRunning = false;
+            this.isInViewport = true;
+            this.section = document.getElementById('energy');
 
-                this.ctx = this.canvas.getContext('2d');
-                this.nodes = [];
-                this.core = { x: 0, y: 0 };
-                this.particles = [];
-                this.autopilotTimeout = null;
-                this.autopilotActive = false;
-                this.energyObserver = null;
-                this.hudEl = document.querySelector('.energy-hud');
-                this.hudPulseTimer = null;
-                this.onboardingKey = 'energy_onboarding_demo_v1';
-                this.onboardingPlayed = false;
-                this.onboardingTimeout = null;
-                this.onboardingHintHideTimeout = null;
-                this.onboardingHintEl = null;
-                this.rafId = null;
-                this.isAnimating = false;
-                this.motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-                this.prefersReducedMotion = this.motionQuery.matches;
-                this.onMotionPreferenceChange = () => {
-                    this.prefersReducedMotion = this.motionQuery.matches;
-                    if (this.prefersReducedMotion) {
-                        this.stopAutopilot(false);
-                        this.hideOnboardingHint(true);
-                    }
-                };
-                this.onVisibilityChange = () => {
-                    if (document.hidden) {
-                        this.pauseAnimation();
-                        this.stopAutopilot(false);
+            this.init();
+        }
+
+        init() {
+            this.resize();
+            window.addEventListener('resize', () => this.resize());
+
+            const section = document.querySelector('.photos-constellation');
+            if (section) {
+                section.addEventListener('mousemove', (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    this.mouseX = e.clientX - rect.left;
+                    this.mouseY = e.clientY - rect.top;
+                    this.checkHover(this.mouseX, this.mouseY);
+                });
+                section.addEventListener('mouseleave', () => {
+                    this.mouseX = -1000;
+                    this.mouseY = -1000;
+                });
+            }
+
+            if (this.section) {
+                this.sectionObserver = new IntersectionObserver((entries) => {
+                    const entry = entries[0];
+                    this.isInViewport = !!entry?.isIntersecting;
+                    if (this.isInViewport && !document.hidden) {
+                        this.start();
                     } else {
-                        this.resumeAnimation();
-                        if (!this.prefersReducedMotion && this.isEnergyInViewport()) {
-                            this.startAutopilot();
-                        }
+                        this.stop();
                     }
+                }, { threshold: 0.1 });
+                this.sectionObserver.observe(this.section);
+            }
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    this.stop();
+                } else if (this.isInViewport) {
+                    this.start();
+                }
+            });
+
+            this.updateNodePositions();
+            this.start();
+        }
+
+        start() {
+            if (this.isRunning || document.hidden || !this.isInViewport) return;
+            this.isRunning = true;
+            this.animate();
+        }
+
+        stop() {
+            this.isRunning = false;
+            if (this.rafId) {
+                cancelAnimationFrame(this.rafId);
+                this.rafId = null;
+            }
+        }
+
+        updateNodePositions() {
+            this.nodes = [];
+            document.querySelectorAll('.energy-node').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                const containerRect = this.canvas.getBoundingClientRect();
+                const node = {
+                    x: rect.left - containerRect.left + rect.width / 2,
+                    y: rect.top - containerRect.top + rect.height / 2,
+                    radius: rect.width / 2,
+                    el: el,
+                    triggered: false
                 };
-                this.init();
-            }
+                this.nodes.push(node);
 
-            init() {
-                this.resize();
-                window.addEventListener('resize', () => this.resize());
-                this.motionQuery.addEventListener('change', this.onMotionPreferenceChange);
-                document.addEventListener('visibilitychange', this.onVisibilityChange);
-                this.onboardingPlayed = this.hasSeenOnboarding();
-                this.findNodes();
-                this.bindViewportAutopilot();
-                this.resumeAnimation();
-            }
-
-            resize() {
-                const rect = this.canvas.parentElement.getBoundingClientRect();
-                this.canvas.width = rect.width * 1.2;
-                this.canvas.height = rect.height * 1.2;
-                this.canvas.style.width = '120%';
-                this.canvas.style.height = '120%';
-                this.canvas.style.left = '-10%';
-                this.canvas.style.top = '-10%';
-            }
-
-            bindViewportAutopilot() {
-                const energySection = document.getElementById('energy');
-                if (!energySection) return;
-
-                this.energyObserver = new IntersectionObserver((entries) => {
-                    entries.forEach((entry) => {
-                        if (entry.isIntersecting && !this.prefersReducedMotion) {
-                            this.startAutopilot();
-                            this.maybeRunOnboardingDemo();
-                        } else if (entry.isIntersecting && this.prefersReducedMotion) {
-                            this.setHudVisible(true);
-                            this.stopAutopilot(false);
-                        } else {
-                            this.stopAutopilot();
-                        }
-                    });
-                }, { threshold: 0.35 });
-
-                this.energyObserver.observe(energySection);
-            }
-
-            isEnergyInViewport() {
-                const energySection = document.getElementById('energy');
-                if (!energySection) return false;
-                const rect = energySection.getBoundingClientRect();
-                const vh = window.innerHeight || document.documentElement.clientHeight;
-                const visibleHeight = Math.min(rect.bottom, vh) - Math.max(rect.top, 0);
-                return visibleHeight > rect.height * 0.35;
-            }
-
-            hasSeenOnboarding() {
-                try {
-                    return sessionStorage.getItem(this.onboardingKey) === '1';
-                } catch (_) {
-                    return false;
+                if (!el.dataset.saluteBound) {
+                    el.dataset.saluteBound = '1';
+                    el.addEventListener('pointerenter', () => {
+                        const currentNode = this.getNodeByElement(el) || node;
+                        this.activeNode = currentNode;
+                        this.createBurst(currentNode.x, currentNode.y, 'burst');
+                    }, { passive: true });
+                    el.addEventListener('pointerleave', () => {
+                        if (this.activeNode && this.activeNode.el === el) this.activeNode = null;
+                    }, { passive: true });
+                    el.addEventListener('pointermove', (e) => {
+                        const r = el.getBoundingClientRect();
+                        const mx = ((e.clientX - r.left) / r.width) * 100;
+                        const my = ((e.clientY - r.top) / r.height) * 100;
+                        el.style.setProperty('--mx', `${Math.max(0, Math.min(100, mx)).toFixed(2)}%`);
+                        el.style.setProperty('--my', `${Math.max(0, Math.min(100, my)).toFixed(2)}%`);
+                    }, { passive: true });
                 }
-            }
+            });
+        }
 
-            markOnboardingSeen() {
-                this.onboardingPlayed = true;
-                try {
-                    sessionStorage.setItem(this.onboardingKey, '1');
-                } catch (_) {
-                    // ignore storage errors
-                }
-            }
+        getNodeByElement(el) {
+            return this.nodes.find((n) => n.el === el) || null;
+        }
 
-            startAutopilot() {
-                if (this.prefersReducedMotion) return;
-                if (this.autopilotActive) return;
-                this.autopilotActive = true;
-                this.setHudVisible(true);
-                this.scheduleAutopilotTick();
-            }
+        resize() {
+            this.dpr = window.devicePixelRatio || 1;
+            this.canvas.width = this.canvas.offsetWidth * this.dpr;
+            this.canvas.height = this.canvas.offsetHeight * this.dpr;
+            this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+            this.updateNodePositions();
+        }
 
-            stopAutopilot(hideHud = true) {
-                this.autopilotActive = false;
-                if (hideHud) {
-                    this.setHudVisible(false);
-                }
-                if (this.autopilotTimeout) {
-                    clearTimeout(this.autopilotTimeout);
-                    this.autopilotTimeout = null;
-                }
-                if (this.onboardingTimeout) {
-                    clearTimeout(this.onboardingTimeout);
-                    this.onboardingTimeout = null;
-                }
-                this.hideOnboardingHint(true);
-            }
-
-            setHudVisible(visible) {
-                if (!this.hudEl) return;
-                this.hudEl.classList.toggle('is-visible', visible);
-                if (!visible) {
-                    this.hudEl.classList.remove('pulse');
-                    if (this.hudPulseTimer) {
-                        clearTimeout(this.hudPulseTimer);
-                        this.hudPulseTimer = null;
+        checkHover(mx, my) {
+            this.nodes.forEach(node => {
+                const dist = Math.hypot(mx - node.x, my - node.y);
+                if (dist < node.radius) {
+                    if (!node.triggered) {
+                        if (!this.reduceMotion) this.createBurst(node.x, node.y, 'trail');
+                        node.triggered = true;
+                        this.activeNode = node;
                     }
-                }
-            }
-
-            hudBeat() {
-                if (this.prefersReducedMotion || !this.hudEl) return;
-                this.hudEl.classList.add('pulse');
-                if (this.hudPulseTimer) {
-                    clearTimeout(this.hudPulseTimer);
-                }
-                const beatDuration = 220 + Math.floor(Math.random() * 81);
-                this.hudPulseTimer = setTimeout(() => {
-                    this.hudEl.classList.remove('pulse');
-                    this.hudPulseTimer = null;
-                }, beatDuration);
-            }
-
-            ensureOnboardingHint() {
-                if (this.onboardingHintEl || this.prefersReducedMotion) return this.onboardingHintEl;
-                const host = document.querySelector('.photos-constellation');
-                if (!host) return null;
-                const hint = document.createElement('div');
-                hint.className = 'energy-onboarding-hint';
-                hint.textContent = 'Кликни на узел — откроешь портрет';
-                host.appendChild(hint);
-                this.onboardingHintEl = hint;
-                return hint;
-            }
-
-            showOnboardingHint() {
-                const hint = this.ensureOnboardingHint();
-                if (!hint || this.prefersReducedMotion) return;
-                hint.classList.add('is-visible');
-                if (this.onboardingHintHideTimeout) {
-                    clearTimeout(this.onboardingHintHideTimeout);
-                }
-                this.onboardingHintHideTimeout = setTimeout(() => {
-                    this.hideOnboardingHint();
-                }, 2000);
-            }
-
-            hideOnboardingHint(immediate = false) {
-                if (!this.onboardingHintEl) return;
-                if (this.onboardingHintHideTimeout) {
-                    clearTimeout(this.onboardingHintHideTimeout);
-                    this.onboardingHintHideTimeout = null;
-                }
-                if (immediate) {
-                    this.onboardingHintEl.classList.remove('is-visible');
-                    return;
-                }
-                this.onboardingHintEl.classList.remove('is-visible');
-            }
-
-            maybeRunOnboardingDemo() {
-                if (this.prefersReducedMotion || this.onboardingPlayed || this.nodes.length === 0) return;
-
-                this.markOnboardingSeen();
-                const first = this.nodes[Math.floor(Math.random() * this.nodes.length)];
-                this.pulseNode(first.element);
-
-                if (this.nodes.length > 1) {
-                    const candidates = this.nodes.filter((node) => node.element !== first.element);
-                    const second = candidates[Math.floor(Math.random() * candidates.length)];
-                    this.onboardingTimeout = setTimeout(() => {
-                        this.pulseNode(second.element);
-                        this.onboardingTimeout = null;
-                    }, 700);
-                }
-
-                this.showOnboardingHint();
-            }
-
-            scheduleAutopilotTick() {
-                if (this.prefersReducedMotion) return;
-                if (!this.autopilotActive) return;
-                const delay = 1200 + Math.floor(Math.random() * 801);
-                this.autopilotTimeout = setTimeout(() => {
-                    if (this.autopilotActive && !this.prefersReducedMotion && this.nodes.length > 0) {
-                        const randomNode = this.nodes[Math.floor(Math.random() * this.nodes.length)];
-                        this.pulseNode(randomNode.element);
-                    }
-                    this.scheduleAutopilotTick();
-                }, delay);
-            }
-
-            findNodes() {
-                const constellation = document.querySelector('.photos-constellation');
-                if (!constellation) return;
-
-                const energyNodes = constellation.querySelectorAll('.energy-node');
-                const rect = constellation.getBoundingClientRect();
-
-                // Core в центре
-                this.core = {
-                    x: rect.width / 2,
-                    y: rect.height / 2
-                };
-
-                // Собираем позиции всех узлов
-                this.nodes = Array.from(energyNodes).map(node => {
-                    const nodeRect = node.getBoundingClientRect();
-                    return {
-                        x: nodeRect.left - rect.left + nodeRect.width / 2,
-                        y: nodeRect.top - rect.top + nodeRect.height / 2,
-                        element: node,
-                        active: false
-                    };
-                });
-
-                // Hover эффекты
-                energyNodes.forEach((node, i) => {
-                    node.addEventListener('mouseenter', () => {
-                        this.nodes[i].active = true;
-                        if (!this.prefersReducedMotion) {
-                            this.createPulse(this.nodes[i]);
-                            this.pulseNodeVisual(node);
-                        }
-                    });
-                    node.addEventListener('mouseleave', () => {
-                        this.nodes[i].active = false;
-                    });
-                });
-            }
-
-            pulseNodeVisual(nodeElement) {
-                if (this.prefersReducedMotion) return;
-                if (!nodeElement) return;
-                nodeElement.classList.add('is-pulsing');
-                if (nodeElement._pulseTimer) {
-                    clearTimeout(nodeElement._pulseTimer);
-                }
-                nodeElement._pulseTimer = setTimeout(() => {
-                    nodeElement.classList.remove('is-pulsing');
-                    nodeElement._pulseTimer = null;
-                }, 900);
-            }
-
-            pulseNode(nodeElement) {
-                if (this.prefersReducedMotion) return;
-                if (!nodeElement) return;
-                const node = this.nodes.find((item) => item.element === nodeElement);
-                if (!node) return;
-                this.createPulse(node);
-                this.pulseNodeVisual(nodeElement);
-                this.hudBeat();
-            }
-
-            triggerNodePulse(nodeElement) {
-                this.pulseNode(nodeElement);
-            }
-
-            createPulse(node) {
-                // Создаем частицу, бегущую от core к узлу
-                this.particles.push({
-                    x: this.core.x,
-                    y: this.core.y,
-                    targetX: node.x,
-                    targetY: node.y,
-                    progress: 0,
-                    speed: 0.02 + Math.random() * 0.01,
-                    size: 2 + Math.random() * 2,
-                    opacity: 1
-                });
-            }
-
-            drawConnection(from, to, opacity = 0.1, active = false) {
-                const ctx = this.ctx;
-                const dx = to.x - from.x;
-                const dy = to.y - from.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                // Bezier curve для красивой дуги
-                const controlX = from.x + dx * 0.5 + dy * 0.2;
-                const controlY = from.y + dy * 0.5 - dx * 0.2;
-
-                ctx.beginPath();
-                ctx.moveTo(from.x, from.y);
-                ctx.quadraticCurveTo(controlX, controlY, to.x, to.y);
-
-                const gradient = ctx.createLinearGradient(from.x, from.y, to.x, to.y);
-                if (active) {
-                    gradient.addColorStop(0, `rgba(78,243,255,${opacity * 2})`);
-                    gradient.addColorStop(0.5, `rgba(139,92,255,${opacity * 2.5})`);
-                    gradient.addColorStop(1, `rgba(78,243,255,${opacity * 2})`);
-                    ctx.lineWidth = 1.5;
                 } else {
-                    gradient.addColorStop(0, `rgba(78,243,255,${opacity})`);
-                    gradient.addColorStop(0.5, `rgba(139,92,255,${opacity * 0.8})`);
-                    gradient.addColorStop(1, `rgba(78,243,255,${opacity * 0.6})`);
-                    ctx.lineWidth = 0.8;
+                    node.triggered = false;
+                    if (this.activeNode && this.activeNode.el === node.el) this.activeNode = null;
                 }
-
-                ctx.strokeStyle = gradient;
-                ctx.stroke();
-
-                return { controlX, controlY };
-            }
-
-            pauseAnimation() {
-                this.isAnimating = false;
-                if (this.rafId) {
-                    cancelAnimationFrame(this.rafId);
-                    this.rafId = null;
-                }
-            }
-
-            resumeAnimation() {
-                if (this.isAnimating) return;
-                this.isAnimating = true;
-                this.animate();
-            }
-
-            animate() {
-                if (!this.isAnimating) return;
-                const ctx = this.ctx;
-                ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-                // Рисуем базовые связи (очень тонкие)
-                this.nodes.forEach(node => {
-                    this.drawConnection(this.core, node, node.active ? 0.25 : 0.06, node.active);
-                });
-
-                // Рисуем и обновляем частицы
-                this.particles = this.particles.filter(particle => {
-                    particle.progress += particle.speed;
-
-                    if (particle.progress >= 1) {
-                        return false; // Удаляем завершенные
-                    }
-
-                    // Bezier interpolation
-                    const t = particle.progress;
-                    const dx = particle.targetX - this.core.x;
-                    const dy = particle.targetY - this.core.y;
-                    const controlX = this.core.x + dx * 0.5 + dy * 0.2;
-                    const controlY = this.core.y + dy * 0.5 - dx * 0.2;
-
-                    const x = Math.pow(1-t, 2) * this.core.x + 2 * (1-t) * t * controlX + Math.pow(t, 2) * particle.targetX;
-                    const y = Math.pow(1-t, 2) * this.core.y + 2 * (1-t) * t * controlY + Math.pow(t, 2) * particle.targetY;
-
-                    // Рисуем частицу
-                    ctx.beginPath();
-                    ctx.arc(x, y, particle.size, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(78,243,255,${particle.opacity * (1 - t * 0.5)})`;
-                    ctx.shadowBlur = 15;
-                    ctx.shadowColor = 'rgba(78,243,255,0.8)';
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-
-                    return true;
-                });
-
-                this.rafId = requestAnimationFrame(() => this.animate());
-            }
+            });
         }
 
-        // ========================================
-        // CORE REACTOR PARTICLES
-        // ========================================
-        class ReactorParticles {
-            constructor() {
-                this.canvas = document.getElementById('reactorParticles');
-                if (!this.canvas) return;
+        createBurst(x, y, mode = 'burst') {
+            const burstCount = this.mobileQuality ? 30 : 42;
+            const trailCount = this.mobileQuality ? 3 : 5;
+            const count = this.reduceMotion
+                ? (mode === 'trail' ? 0 : 10)
+                : (mode === 'trail' ? trailCount : burstCount);
+            if (this.reduceMotion && mode === 'trail') return;
 
-                this.ctx = this.canvas.getContext('2d');
-                this.particles = [];
-                this.rafId = null;
-                this.isAnimating = false;
-                this.onVisibilityChange = () => {
-                    if (document.hidden) {
-                        this.pauseAnimation();
-                    } else {
-                        this.resumeAnimation();
-                    }
-                };
-                this.init();
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = mode === 'trail'
+                    ? (Math.random() * 1.2 + 0.9)
+                    : (Math.random() * 2.6 + 1.8);
+                const palette = ['#00f6ff', '#ff006e', '#8338ec'];
+                this.sparks.push({
+                    x,
+                    y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed * 0.92,
+                    life: 1,
+                    decay: mode === 'trail'
+                        ? (this.mobileQuality ? 0.065 : 0.058)
+                        : (this.mobileQuality ? 0.042 : 0.036),
+                    size: mode === 'trail' ? (Math.random() * 1.1 + 0.8) : (Math.random() * 1.8 + 1.0),
+                    color: palette[(Math.random() * palette.length) | 0]
+                });
             }
 
-            init() {
-                this.canvas.width = 400;
-                this.canvas.height = 400;
-                document.addEventListener('visibilitychange', this.onVisibilityChange);
-
-                // Создаем частицы
-                for (let i = 0; i < 30; i++) {
-                    this.particles.push({
-                        angle: Math.random() * Math.PI * 2,
-                        radius: 40 + Math.random() * 100,
-                        speed: 0.002 + Math.random() * 0.003,
-                        size: 1 + Math.random() * 2,
-                        opacity: 0.3 + Math.random() * 0.5
+            if (!this.reduceMotion && mode === 'burst') {
+                const heavy = this.mobileQuality ? 2 : 3;
+                for (let i = 0; i < heavy; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 1.6 + 1.4;
+                    this.sparks.push({
+                        x,
+                        y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed * 0.85,
+                        life: 1,
+                        decay: this.mobileQuality ? 0.024 : 0.02,
+                        size: Math.random() * 2 + 2.2,
+                        color: ['#00f6ff', '#ff006e', '#8338ec'][i % 3]
                     });
                 }
-
-                this.resumeAnimation();
             }
 
-            pauseAnimation() {
-                this.isAnimating = false;
-                if (this.rafId) {
-                    cancelAnimationFrame(this.rafId);
-                    this.rafId = null;
-                }
-            }
-
-            resumeAnimation() {
-                if (this.isAnimating) return;
-                this.isAnimating = true;
-                this.animate();
-            }
-
-            animate() {
-                if (!this.isAnimating) return;
-                const ctx = this.ctx;
-                ctx.clearRect(0, 0, 400, 400);
-
-                const centerX = 200;
-                const centerY = 200;
-
-                this.particles.forEach(p => {
-                    p.angle += p.speed;
-                    const x = centerX + Math.cos(p.angle) * p.radius;
-                    const y = centerY + Math.sin(p.angle) * p.radius;
-
-                    ctx.beginPath();
-                    ctx.arc(x, y, p.size, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(78,243,255,${p.opacity})`;
-                    ctx.shadowBlur = 8;
-                    ctx.shadowColor = 'rgba(78,243,255,0.6)';
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-                });
-
-                this.rafId = requestAnimationFrame(() => this.animate());
+            if (this.sparks.length > this.maxSparks) {
+                this.sparks.splice(0, this.sparks.length - this.maxSparks);
             }
         }
 
-        // ========================================
-        // SMART GLASS MOUSE TRACKING
-        // ========================================
-        function initSmartGlassHighlights() {
-            const cards = document.querySelectorAll('.node-card, .energy-node');
+        animate() {
+            if (!this.isRunning) return;
+            this.frameCount++;
 
-            cards.forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = ((e.clientX - rect.left) / rect.width) * 100;
-                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+            this.ctx.clearRect(0, 0, this.canvas.width / this.dpr, this.canvas.height / this.dpr);
 
-                    card.style.setProperty('--mouse-x', `${x}%`);
-                    card.style.setProperty('--mouse-y', `${y}%`);
-                });
+            this.nodes.forEach(node => {
+                const dist = Math.hypot(this.mouseX - node.x, this.mouseY - node.y);
+                if (dist < this.connectionRadius) {
+                    const opacity = (1 - dist / this.connectionRadius) * 0.8;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.mouseX, this.mouseY);
+                    this.ctx.lineTo(node.x, node.y);
+                    this.ctx.strokeStyle = `rgba(0, 246, 255, ${opacity})`;
+                    this.ctx.lineWidth = 1.5;
+                    this.ctx.stroke();
+                }
             });
+
+            if (this.activeNode && !this.reduceMotion && this.frameCount % this.trailInterval === 0) {
+                this.createBurst(this.activeNode.x, this.activeNode.y, 'trail');
+            }
+
+            for (let i = this.sparks.length - 1; i >= 0; i--) {
+                const sp = this.sparks[i];
+                sp.x += sp.vx;
+                sp.y += sp.vy;
+                sp.vx *= 0.986;
+                sp.vy *= 0.986;
+                sp.life -= sp.decay || 0.04;
+
+                if (sp.life <= 0) {
+                    this.sparks.splice(i, 1);
+                } else {
+                    this.ctx.beginPath();
+                    this.ctx.arc(sp.x, sp.y, (sp.size || 2) * sp.life, 0, Math.PI * 2);
+                    this.ctx.fillStyle = sp.color;
+                    this.ctx.globalAlpha = Math.max(0, sp.life * 0.92);
+                    this.ctx.fill();
+                    this.ctx.globalAlpha = 1;
+                }
+            }
+
+            this.rafId = requestAnimationFrame(() => this.animate());
         }
 
-        // ========================================
-        // STICKY TEAM NAVIGATION
-        // ========================================
-        function createTeamNavigation() {
-            console.log('createTeamNavigation CALLED');
-            const sceneTargets = [...document.querySelectorAll('section[data-nav-title]')];
-            const teamTargets = [...document.querySelectorAll('.team-group')];
-            const navTargets = [...sceneTargets, ...teamTargets];
-            console.log('Navigation targets found:', navTargets.length);
-            if (navTargets.length === 0) return;
+        pulseNode(nodeElement) {
+            const rect = nodeElement.getBoundingClientRect();
+            const containerRect = this.canvas.getBoundingClientRect();
+            const x = rect.left - containerRect.left + rect.width / 2;
+            const y = rect.top - containerRect.top + rect.height / 2;
+            this.createBurst(x, y, 'burst');
+            if (!this.reduceMotion) this.createBurst(x, y, 'trail');
+        }
+    }
 
-            const nav = document.createElement('nav');
-            nav.className = 'team-navigator';
-            nav.innerHTML = '<div class="nav-title">SIGNAL MAP</div>';
 
-            const navList = document.createElement('div');
-            navList.className = 'nav-list';
+    // ========================================
+    // 2. CORE REACTOR (TRANSPARENT + TRAILS)
+    // ========================================
+    class ReactorParticles {
+        constructor() {
+            this.canvas = document.getElementById('reactorParticles');
+            if (!this.canvas) return;
+            this.ctx = this.canvas.getContext('2d');
+            this.dpr = window.devicePixelRatio || 1;
+            this.width = 300;
+            this.height = 300;
+            this.particles = [];
+            this.sparks = [];
+            this.centerX = this.width / 2;
+            this.centerY = this.height / 2;
+            this.mouseX = -1000;
+            this.mouseY = -1000;
+            this.isHovered = false;
+            this.rafId = null;
+            this.isRunning = false;
+            this.isInViewport = true;
+            this.heartbeatPeriodMs = 5200;
+            this.reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            this.mobileQuality = window.matchMedia('(hover: none), (max-width: 900px)').matches;
+            this.particleCount = this.reduceMotion ? 10 : (this.mobileQuality ? 16 : 30);
+            this.sparkBudget = this.reduceMotion ? 0 : (this.mobileQuality ? 16 : 36);
+            this.viewportObserver = null;
+            this.visibilityHandler = null;
+            this.resizeHandler = null;
 
-            const isMobile = window.matchMedia('(max-width: 1200px)').matches;
-            const seenLabels = new Set();
-            let drawer = null;
-            let drawerList = null;
+            this.init();
+        }
 
-            function normalizeKey(label) {
-                return label.trim().toLowerCase();
+        init() {
+            this.resize();
+            for (let i = 0; i < this.particleCount; i++) {
+                this.particles.push({
+                    angle: Math.random() * Math.PI * 2,
+                    radius: 26 + Math.random() * (this.mobileQuality ? 30 : 44),
+                    speed: (Math.random() * 0.012) + 0.006,
+                    size: Math.random() * (this.mobileQuality ? 1.2 : 1.8) + 0.6,
+                    color: Math.random() > 0.5 ? '#00f6ff' : '#bc13fe',
+                    drift: Math.random() * Math.PI * 2
+                });
             }
 
-            function makeItem(target, isTeam, idx, extraClass = '') {
-                const label = isTeam
-                    ? (target.querySelector('.team-name') ? target.querySelector('.team-name').textContent : '')
-                    : (target.dataset.navTitle || '');
-                if (!label) return null;
+            const wrapper = document.querySelector('.hero-reactor');
+            if (wrapper) {
+                wrapper.addEventListener('mousemove', (e) => {
+                    const rect = this.canvas.getBoundingClientRect();
+                    this.mouseX = e.clientX - rect.left;
+                    this.mouseY = e.clientY - rect.top;
+                    const dist = Math.hypot(this.mouseX - 150, this.mouseY - 150);
+                    this.isHovered = dist < 100;
+                });
+                wrapper.addEventListener('mouseleave', () => { this.isHovered = false; });
+            }
 
-                const teamKey = normalizeKey(label);
-                if (seenLabels.has(teamKey)) {
-                    console.warn(`Duplicate team skipped: ${label}`);
-                    return null;
+            // Lifecycle: pause when tab hidden, resume when visible.
+            this.visibilityHandler = () => {
+                if (document.hidden) {
+                    this.stop();
+                } else if (this.isInViewport) {
+                    this.start();
                 }
-                seenLabels.add(teamKey);
-
-                if (!target.id) {
-                    target.id = isTeam ? `team-${idx}` : `section-${idx}`;
-                }
-
-                const navItem = document.createElement('a');
-                navItem.href = `#${target.id}`;
-                navItem.className = `nav-item ${extraClass}`.trim();
-                navItem.innerHTML = `<span class="nav-dot"></span>${label}`;
-                return navItem;
-            }
-
-            function appendGroupTitle(text) {
-                const groupTitle = document.createElement('div');
-                groupTitle.className = 'nav-group-title';
-                groupTitle.textContent = text;
-                navList.appendChild(groupTitle);
-            }
-
-            if (isMobile) {
-                sceneTargets.forEach((target, i) => {
-                    const sceneItem = makeItem(target, false, i, 'nav-item--scene');
-                    if (sceneItem) navList.appendChild(sceneItem);
-                });
-
-                const teamsToggle = document.createElement('button');
-                teamsToggle.type = 'button';
-                teamsToggle.className = 'nav-item nav-item--teams-toggle';
-                teamsToggle.innerHTML = '<span class="nav-dot"></span>TEAMS';
-                navList.appendChild(teamsToggle);
-
-                drawer = document.createElement('div');
-                drawer.className = 'teams-drawer';
-                drawer.innerHTML = `
-                    <div class="teams-drawer__backdrop"></div>
-                    <div class="teams-drawer__panel">
-                        <div class="teams-drawer__header">
-                            <div class="teams-drawer__title">TEAMS</div>
-                            <button type="button" class="teams-drawer__close" aria-label="Close teams drawer">×</button>
-                        </div>
-                        <div class="teams-drawer__list"></div>
-                    </div>
-                `;
-                drawerList = drawer.querySelector('.teams-drawer__list');
-                teamTargets.forEach((target, i) => {
-                    const teamItem = makeItem(target, true, i, 'nav-item--team');
-                    if (teamItem) {
-                        drawerList.appendChild(teamItem);
-                        teamItem.addEventListener('click', () => drawer.classList.remove('is-open'));
-                    }
-                });
-
-                const closeBtn = drawer.querySelector('.teams-drawer__close');
-                const backdrop = drawer.querySelector('.teams-drawer__backdrop');
-                const closeDrawer = () => drawer.classList.remove('is-open');
-                const openDrawer = () => drawer.classList.add('is-open');
-
-                teamsToggle.addEventListener('click', openDrawer);
-                closeBtn.addEventListener('click', closeDrawer);
-                backdrop.addEventListener('click', closeDrawer);
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape') closeDrawer();
-                });
-                document.body.appendChild(drawer);
-            } else {
-                appendGroupTitle('SCENES');
-                sceneTargets.forEach((target, i) => {
-                    const sceneItem = makeItem(target, false, i, 'nav-item--scene');
-                    if (sceneItem) navList.appendChild(sceneItem);
-                });
-
-                appendGroupTitle('TEAMS');
-                teamTargets.forEach((target, i) => {
-                    const teamItem = makeItem(target, true, i, 'nav-item--team');
-                    if (teamItem) navList.appendChild(teamItem);
-                });
-            }
-
-            nav.appendChild(navList);
-            document.body.appendChild(nav);
-            console.log('Navigation appended to body, items:', navList.children.length);
-
-            const updateActiveState = () => {
-                let current = '';
-                navTargets.forEach(target => {
-                    const rect = target.getBoundingClientRect();
-                    if (rect.top <= 150 && rect.bottom >= 150) {
-                        current = target.id;
-                    }
-                });
-
-                const allNavItems = [
-                    ...nav.querySelectorAll('.nav-item[href]'),
-                    ...(drawerList ? drawerList.querySelectorAll('.nav-item[href]') : [])
-                ];
-                allNavItems.forEach(item => {
-                    item.classList.remove('active');
-                    if (item.getAttribute('href') === `#${current}`) {
-                        item.classList.add('active');
-                    }
-                });
             };
+            document.addEventListener('visibilitychange', this.visibilityHandler);
 
-            updateActiveState();
-            // Highlight active section
-            window.addEventListener('scroll', updateActiveState);
-        }
+            if (this.viewportObserver) this.viewportObserver.disconnect();
+            const target = this.canvas.closest('.hero-reactor') || this.canvas;
+            this.viewportObserver = new IntersectionObserver((entries) => {
+                this.isInViewport = !!entries[0]?.isIntersecting;
+                if (this.isInViewport && !document.hidden) this.start();
+                else this.stop();
+            }, { threshold: 0.12 });
+            this.viewportObserver.observe(target);
 
-        
+            this.resizeHandler = () => this.resize();
+            window.addEventListener('resize', this.resizeHandler, { passive: true });
 
-        // BADGE MAPPING (ROLE-BASED)
-        // ========================================
-        function applyBadgeMapping() {
-            const cards = document.querySelectorAll('.node-card');
-
-            const badgeRules = [
-                // AQA/Automation FIRST (before generic QA)
-                ['aqa engineer', 'RELIABILITY ENGINE'],
-                ['aqa', 'RELIABILITY ENGINE'],
-                ['automation', 'RELIABILITY ENGINE'],
-                ['sdet', 'RELIABILITY ENGINE'],
-
-                // QA
-                ['qa engineer', 'QUALITY SENTINEL'],
-                ['manual qa', 'QUALITY SENTINEL'],
-                ['qa', 'QUALITY SENTINEL'],
-                ['тестировщик', 'QUALITY SENTINEL'],
-
-                // Analysts
-                ['business analyst', 'REQUIREMENTS ORACLE'],
-                ['system analyst', 'SYSTEM CARTOGRAPHER'],
-                ['data analyst', 'INSIGHT ENGINE'],
-                ['analyst', 'SIGNAL INTERPRETER'],
-
-                // Developers / ML / Data
-                ['ml engineer lead', 'MODEL COMMANDER'],
-                ['ml engineer', 'MODEL FORGE'],
-                ['front end dev', 'INTERFACE SMITH'],
-                ['frontend', 'INTERFACE SMITH'],
-                ['back end dev', 'CORE BUILDER'],
-                ['backend', 'CORE BUILDER'],
-                ['sql dev', 'QUERY FORGE'],
-                ['data engineer', 'DATA FORGE'],
-                ['dba', 'DATA FORGE'],
-                ['developer', 'CODE ARTISAN'],
-                ['software engineer', 'CODE ARTISAN'],
-                ['разработчик', 'CODE ARTISAN'],
-
-                // Special
-                ['architect', 'SYSTEM ARCHITECT'],
-                ['архитектор', 'SYSTEM ARCHITECT'],
-                ['devops engineer', 'DEPLOYMENT FORGE'],
-                ['devops', 'DEPLOYMENT FORGE'],
-                ['sre', 'RELIABILITY GUARD'],
-                ['support engineer', 'SUPPORT MATRIX'],
-
-                // Management
-                ['project manager', 'FLOW CONDUCTOR'],
-                ['product owner', 'VISION KEEPER'],
-                ['pmo', 'FLOW CONDUCTOR'],
-                ['team lead', 'SYSTEM LEAD'],
-                ['stream lead', 'SYSTEM LEAD'],
-
-                // Design
-                ['designer', 'INTERFACE ALCHEMIST'],
-                ['дизайнер', 'INTERFACE ALCHEMIST'],
-                ['ui/ux', 'INTERFACE ALCHEMIST']
-            ];
-
-            cards.forEach(card => {
-                const nameEl = card.querySelector('.node-name');
-                const roleEl = card.querySelector('.node-role');
-                const badgeEl = card.querySelector('.badge');
-
-                if (!nameEl || !roleEl || !badgeEl) return;
-
-                const name = nameEl.textContent.trim().toLowerCase();
-
-                // Skip leadership - they have custom badges
-                if (name.includes('нестеров') ||
-                    name.includes('мозжеров') ||
-                    name.includes('уланов')) {
-                    return; // Don't change their badges
-                }
-
-                // Normalize role: lower-case + collapse spaces/hyphens
-                const role = roleEl.textContent
-                    .toLowerCase()
-                    .replace(/[-–—]+/g, ' ')
-                    .replace(/\s+/g, ' ')
-                    .trim();
-
-                // Find matching badge
-                let newBadge = 'SIGNAL SPECIALIST'; // fallback
-
-                // Check each rule (order matters - AQA before QA!)
-                for (const [key, value] of badgeRules) {
-                    if (role.includes(key)) {
-                        newBadge = value;
-                        break;
-                    }
-                }
-
-                // Update badge text
-                if (badgeEl.textContent !== newBadge) {
-                    badgeEl.textContent = newBadge;
-                }
+            window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
+                this.reduceMotion = e.matches;
             });
 
-            console.log('Badge mapping applied to all cards');
+            this.start();
         }
 
-
-        // ========================================
-        // INIT ALL
-        // ========================================
-
-        function normalizeGreetingQuotes() {
-            document.querySelectorAll('.frequency-content').forEach((el) => {
-                el.innerHTML = el.innerHTML.replace(/""([^"]+?)""/g, '«$1»');
-            });
+        start() {
+            if (this.isRunning || document.hidden || !this.isInViewport) return;
+            this.isRunning = true;
+            this.rafId = requestAnimationFrame((ts) => this.animate(ts));
         }
-        
-        // ========================================
-        // GIRL PHOTO LIGHTBOX
-        // ========================================
-        function initGirlModal() {
-            const modal = document.getElementById('girlModal');
-            if (!modal) return;
 
-            const imgEl = document.getElementById('girlModalImg');
-            const nameEl = document.getElementById('girlModalName');
-            const closeBtn = modal.querySelector('.girl-modal__close');
-            const overlay = modal.querySelector('.girl-modal__overlay');
-            const panel = modal.querySelector('.girl-modal__panel');
+        stop() {
+            this.isRunning = false;
+            if (this.rafId) {
+                cancelAnimationFrame(this.rafId);
+                this.rafId = null;
+            }
+        }
 
-            const open = (src, name) => {
-                imgEl.src = src;
-                imgEl.alt = name ? name : 'Energy';
-                nameEl.textContent = name || '';
-                modal.classList.add('is-open');
-                modal.setAttribute('aria-hidden', 'false');
-                document.body.classList.add('modal-open');
-            };
+        resize() {
+            const logicalW = this.canvas.clientWidth || 300;
+            const logicalH = this.canvas.clientHeight || 300;
+            this.width = logicalW;
+            this.height = logicalH;
+            this.centerX = logicalW / 2;
+            this.centerY = logicalH / 2;
+            this.canvas.width = Math.round(logicalW * this.dpr);
+            this.canvas.height = Math.round(logicalH * this.dpr);
+            this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+        }
 
-            const close = () => {
-                modal.classList.remove('is-open');
-                modal.setAttribute('aria-hidden', 'true');
-                document.body.classList.remove('modal-open');
-                imgEl.src = ''; // Clear src
-            };
+        pulseAt(t, c, w) {
+            const d = t - c;
+            return Math.exp(-(d * d) / (2 * w * w));
+        }
 
-            // Click binding: open on .energy-node click
-            document.querySelectorAll('.photos-constellation .energy-node').forEach(node => {
-                node.addEventListener('click', (e) => {
-                    const img = node.querySelector('img');
-                    if (!img) return;
+        spawnPulseSparks(now, pulse) {
+            if (this.reduceMotion || this.sparks.length >= this.sparkBudget) return;
+            const chance = this.mobileQuality ? 0.06 : 0.1;
+            if (pulse < 0.55 || Math.random() > chance) return;
 
-                    const label = node.querySelector('.entity-label');
-                    const raw = label ? label.textContent.trim() : '';
-                    const name = raw.replace(/^Entity:\s*/i, '');
-
-                    if (window.neuralEnergySystem && typeof window.neuralEnergySystem.pulseNode === 'function') {
-                        window.neuralEnergySystem.pulseNode(node);
-                    }
-                    open(img.currentSrc || img.src, name);
+            const count = this.mobileQuality ? 1 : 2;
+            for (let i = 0; i < count; i++) {
+                const a = Math.random() * Math.PI * 2;
+                const speed = 0.9 + Math.random() * 1.4 + pulse * 1.1;
+                this.sparks.push({
+                    x: this.centerX + Math.cos(a) * 14,
+                    y: this.centerY + Math.sin(a) * 12,
+                    vx: Math.cos(a) * speed,
+                    vy: Math.sin(a) * speed * 0.9,
+                    life: 1,
+                    ttl: this.mobileQuality ? 34 : 44,
+                    age: 0,
+                    color: Math.random() > 0.5 ? '#00f6ff' : '#ff006e'
                 });
-            });
-
-            closeBtn.addEventListener('click', close);
-            overlay.addEventListener('click', close);
-
-            // Close on outside click
-            modal.addEventListener('mousedown', (e) => {
-                if (!panel.contains(e.target)) close();
-            });
-
-            // ESC key
-            window.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && modal.classList.contains('is-open')) close();
-            });
-
-            console.log('Girl photo lightbox initialized');
+            }
         }
 
-        function initMobileNavDrawerToggle() {
-            const toggle = document.querySelector('.nav-toggle');
-            const overlay = document.querySelector('.nav-overlay');
-            if (!toggle || !overlay) return;
+        animate(now = performance.now()) {
+            if (!this.isRunning) return;
 
-            const closeNav = () => document.body.classList.remove('nav-open');
-            const toggleNav = () => document.body.classList.toggle('nav-open');
+            this.ctx.globalCompositeOperation = 'destination-out';
+            this.ctx.fillStyle = this.reduceMotion ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.14)';
+            this.ctx.fillRect(0, 0, this.width, this.height);
 
-            toggle.addEventListener('click', toggleNav);
-            overlay.addEventListener('click', closeNav);
+            // Heartbeat: double peak (lub-dub) in one period.
+            const t = (now % this.heartbeatPeriodMs) / this.heartbeatPeriodMs;
+            const pulse = Math.min(1, this.pulseAt(t, 0.14, 0.03) + this.pulseAt(t, 0.22, 0.022) * 0.72);
+            const hoverBoost = this.isHovered ? 0.2 : 0;
+            const intensity = 0.34 + pulse * 0.5 + hoverBoost;
 
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    closeNav();
-                }
+            // Layer A: stable core
+            const coreR = 18 + pulse * 2.6;
+            const coreGrad = this.ctx.createRadialGradient(
+                this.centerX, this.centerY, 2,
+                this.centerX, this.centerY, 44
+            );
+            coreGrad.addColorStop(0, `rgba(255,255,255,${0.16 + intensity * 0.2})`);
+            coreGrad.addColorStop(0.35, `rgba(0,246,255,${0.16 + intensity * 0.34})`);
+            coreGrad.addColorStop(1, 'rgba(0,246,255,0)');
+            this.ctx.fillStyle = coreGrad;
+            this.ctx.beginPath();
+            this.ctx.arc(this.centerX, this.centerY, 44, 0, Math.PI * 2);
+            this.ctx.fill();
+
+            this.ctx.fillStyle = `rgba(188,19,254,${0.22 + intensity * 0.24})`;
+            this.ctx.beginPath();
+            this.ctx.arc(this.centerX, this.centerY, coreR, 0, Math.PI * 2);
+            this.ctx.fill();
+
+            // Layer B: slow orbital ring
+            this.ctx.save();
+            this.ctx.translate(this.centerX, this.centerY);
+            this.ctx.rotate(now * 0.00012);
+            this.ctx.strokeStyle = `rgba(0,246,255,${0.11 + pulse * 0.28})`;
+            this.ctx.lineWidth = 1.2;
+            this.ctx.beginPath();
+            this.ctx.ellipse(0, 0, 58 + pulse * 3, 42 + pulse * 2, 0, 0, Math.PI * 2);
+            this.ctx.stroke();
+            this.ctx.restore();
+
+            // Layer C: orbiting particles and rare sparks
+            this.ctx.globalCompositeOperation = 'lighter';
+            const orbitSpeedMul = this.isHovered ? 1.6 : (1 + pulse * 0.45);
+            this.particles.forEach(p => {
+                const targetSpeed = p.speed * orbitSpeedMul;
+                const targetRadius = p.radius + Math.sin(now * 0.001 + p.drift) * (2 + pulse * 4);
+                p.angle += targetSpeed;
+
+                const x = this.centerX + Math.cos(p.angle) * targetRadius;
+                const y = this.centerY + Math.sin(p.angle) * (targetRadius * 0.8);
+
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, p.size, 0, Math.PI * 2);
+                this.ctx.fillStyle = this.isHovered ? '#ff006e' : p.color;
+                this.ctx.fill();
             });
 
-            document.addEventListener('click', (e) => {
-                const navItem = e.target.closest('.team-navigator .nav-item');
-                if (navItem) {
-                    closeNav();
+            this.spawnPulseSparks(now, pulse);
+            for (let i = this.sparks.length - 1; i >= 0; i--) {
+                const sp = this.sparks[i];
+                sp.age += 1;
+                sp.life = 1 - sp.age / sp.ttl;
+                if (sp.life <= 0) {
+                    this.sparks.splice(i, 1);
+                    continue;
                 }
-            });
+                sp.x += sp.vx;
+                sp.y += sp.vy;
+                sp.vx *= 0.98;
+                sp.vy *= 0.98;
+                this.ctx.globalAlpha = sp.life * (0.7 + pulse * 0.4);
+                this.ctx.fillStyle = sp.color;
+                this.ctx.beginPath();
+                this.ctx.arc(sp.x, sp.y, 1.1 + sp.life * 1.4, 0, Math.PI * 2);
+                this.ctx.fill();
+            }
+            this.ctx.globalAlpha = 1;
+            this.ctx.globalCompositeOperation = 'source-over';
+            this.rafId = requestAnimationFrame((ts) => this.animate(ts));
         }
+    }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            normalizeGreetingQuotes();
-            initGirlModal();
-            applyBadgeMapping();
-            window.neuralEnergySystem = new NeuralEnergySystem();
-            new ReactorParticles();
-            initSmartGlassHighlights();
-            createTeamNavigation();
-            initMobileNavDrawerToggle();
-        });
-    
 
-        // ========================================
-        // EXISTING CODE
-        // ========================================
+    // ========================================
+    // 3. LOGIC INITIALIZATION (MAIN)
+    // ========================================
 
-        // Intersection Observer для анимации появления карточек
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
+    function initLuxuryCardTilt() {
+        if (window.matchMedia('(hover: none), (prefers-reduced-motion: reduce)').matches) return;
+
+        let activeCard = null;
+        let rafId = null;
+        let lastEvent = null;
+        const MAX_TILT = 0;
+
+        const applyTilt = () => {
+            rafId = null;
+            if (!activeCard || !lastEvent) return;
+
+            const rect = activeCard.getBoundingClientRect();
+            const x = lastEvent.clientX - rect.left;
+            const y = lastEvent.clientY - rect.top;
+            const px = Math.max(0, Math.min(1, x / rect.width));
+            const py = Math.max(0, Math.min(1, y / rect.height));
+            const rx = (0.5 - py) * 2 * MAX_TILT;
+            const ry = (px - 0.5) * 2 * MAX_TILT;
+
+            activeCard.style.setProperty('--mx', `${(px * 100).toFixed(2)}%`);
+            activeCard.style.setProperty('--my', `${(py * 100).toFixed(2)}%`);
+            activeCard.style.transform = '';
         };
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
+        document.addEventListener('pointermove', (e) => {
+            const card = e.target.closest('.node-card');
+            if (!card) return;
+            activeCard = card;
+            lastEvent = e;
+            if (!rafId) rafId = requestAnimationFrame(applyTilt);
+        }, { passive: true });
+
+        document.addEventListener('pointerleave', (e) => {
+            const card = e.target.closest('.node-card');
+            if (!card) return;
+            card.style.transform = '';
+            card.style.removeProperty('--mx');
+            card.style.removeProperty('--my');
+            if (activeCard === card) {
+                activeCard = null;
+                lastEvent = null;
+            }
+        }, { passive: true, capture: true });
+    }
+
+    function initVisuals() {
+        new ReactorParticles();
+        window.neuralEnergySystem = new NeuralEnergySystem(); // ????????? ? window
+        initLuxuryCardTilt();
+        
+        // --- GIRL MODAL LOGIC ---
+        const modal = document.getElementById('girlModal');
+        const imgEl = document.getElementById('girlModalImg');
+        const nameEl = document.getElementById('girlModalName');
+        
+        const close = () => {
+            modal.classList.remove('is-open');
+            document.body.classList.remove('modal-open');
+        };
+        
+        document.addEventListener('click', (e) => {
+            const node = e.target.closest('.photos-constellation .energy-node');
+            if (node) {
+                const img = node.querySelector('img');
+                const label = node.querySelector('.entity-label');
+                const name = label ? label.textContent.replace(/^Entity:\s*/i, '') : '';
+                
+                if (img) {
+                    imgEl.src = img.currentSrc || img.src;
+                    imgEl.alt = name;
+                    nameEl.textContent = name;
+                    modal.classList.add('is-open');
+                    document.body.classList.add('modal-open');
                 }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.node-card').forEach(card => {
-            observer.observe(card);
-        });
-
-        // Показ кнопки при скролле
-        window.addEventListener('scroll', function() {
-            const backToTop = document.getElementById('backToTop');
-            if (window.scrollY > 300) {
-                backToTop.classList.add('visible');
-            } else {
-                backToTop.classList.remove('visible');
+                
+                // ?????????? ?????? ?????
+                if (window.neuralEnergySystem) window.neuralEnergySystem.pulseNode(node);
+            }
+            
+            if (e.target.closest('.girl-modal__close') || e.target.closest('.girl-modal__overlay')) {
+                close();
             }
         });
 
-        // Плавный скролл наверх
-        document.getElementById('backToTop').addEventListener('click', function(e) {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.body.classList.remove('nav-open');
+            }
+            if (e.key === 'Escape' && modal.classList.contains('is-open')) close();
         });
-    </script>
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const navToggle = document.querySelector('.nav-toggle');
+        const navOverlay = document.querySelector('.nav-overlay');
+
+        if (navToggle) {
+            navToggle.addEventListener('click', () => {
+                document.body.classList.toggle('nav-open');
+            });
+        }
+
+        if (navOverlay) {
+            navOverlay.addEventListener('click', () => {
+                document.body.classList.remove('nav-open');
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('a.nav-item[href]')) {
+                document.body.classList.remove('nav-open');
+            }
+        });
+
+        initVisuals();
+
+        // ?????? ???????? ??????
+        const checkRuntime = setInterval(() => {
+            if (typeof window.applyBadgeMapping === 'function') {
+                console.log('System Linked. Starting...');
+                window.applyBadgeMapping();
+                clearInterval(checkRuntime);
+            }
+        }, 50);
+        
+        setTimeout(() => clearInterval(checkRuntime), 4000);
+        
+        // ?????? ??????
+        const backToTop = document.getElementById('backToTop');
+        if (backToTop) {
+            window.addEventListener('scroll', () => {
+                backToTop.classList.toggle('visible', window.scrollY > 300);
+            });
+            backToTop.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    });
+</script>
+<script src="teams-runtime.js"></script>
 
 </body>
 </html>
